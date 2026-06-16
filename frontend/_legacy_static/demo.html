@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Valyd Verify — Demo</title>
+<style>
+  :root{
+    --brand:#3b5bdb; --brand-d:#2f49b0; --ink:#1a1c20; --muted:#6b7280;
+    --ok:#2b8a3e; --okbg:#ebfbee; --bad:#c92a2a; --badbg:#fff5f5;
+    --warn:#9c6a13; --warnbg:#fff9db; --idle:#495057; --idlebg:#f1f3f5;
+    --line:#e9ecef; --card:#ffffff;
+  }
+  *{box-sizing:border-box;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  body{margin:0;background:#f6f7fb;color:var(--ink)}
+  .wrap{max-width:560px;margin:0 auto;padding:24px}
+  .hide{display:none!important}
+  .hero{background:linear-gradient(135deg,#3b5bdb,#5f3dc4);color:#fff;border-radius:20px;padding:28px;margin-bottom:18px}
+  .hero h1{margin:0 0 6px;font-size:24px}
+  .hero p{margin:0;opacity:.9;font-size:14px;line-height:1.5}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 4px 18px rgba(20,30,60,.05)}
+  .feat{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .feat:last-child{border-bottom:0}
+  .feat .ic{width:34px;height:34px;border-radius:9px;background:#eef1ff;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .feat b{display:block;font-size:14px}
+  .feat span{font-size:12.5px;color:var(--muted)}
+  button{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:13px 18px;font-size:15px;font-weight:600;cursor:pointer;width:100%}
+  button:hover{background:var(--brand-d)} button:disabled{opacity:.5;cursor:default}
+  .ghost{background:#eef1ff;color:var(--brand)} .ghost:hover{background:#e0e6ff}
+  .mt{margin-top:14px}
+  .step{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+  .step h3{margin:0 0 4px;font-size:14px;text-transform:capitalize;display:flex;justify-content:space-between;align-items:center}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--idlebg);color:var(--idle)}
+  .badge.passed,.badge.APPROVED{background:var(--okbg);color:var(--ok)}
+  .badge.failed,.badge.DECLINED{background:var(--badbg);color:var(--bad)}
+  .badge.review,.badge.IN_REVIEW{background:var(--warnbg);color:var(--warn)}
+  .badge.running{background:#e7f5ff;color:#1971c2}
+  label.file{display:block;font-size:12.5px;color:var(--muted);margin:8px 0 4px}
+  input[type=file]{width:100%;font-size:13px;padding:8px;border:1px dashed #cbd3e1;border-radius:9px;background:#fafbff}
+  .note{font-size:12.5px;color:var(--muted);background:#f1f3f5;border-radius:10px;padding:12px;margin-top:16px;line-height:1.5}
+  .res-ic{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin:4px auto 14px}
+  .res-title{text-align:center;font-size:20px;font-weight:700;margin:0 0 6px}
+  .res-sub{text-align:center;color:var(--muted);font-size:14px;margin:0 0 18px}
+  .kv{font-size:12.5px;color:var(--muted);margin-top:16px}
+  .kv code{display:block;background:#0b1021;color:#c7d2fe;padding:10px 12px;border-radius:9px;margin-top:5px;font-size:12px;word-break:break-all}
+  .err{color:var(--bad);font-size:12.5px;margin-top:6px}
+  .center{text-align:center}
+  .spin{width:42px;height:42px;border:4px solid #e0e6ff;border-top-color:var(--brand);border-radius:50%;margin:20px auto;animation:r 1s linear infinite}
+  @keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- LANDING -->
+  <section id="landing">
+    <div class="hero">
+      <h1>Identity Verification Demo</h1>
+      <p>Walk through a live Valyd KYC session — document check, passive liveness, and a 1:1 face match against your ID. No account required.</p>
+    </div>
+    <div class="card">
+      <div id="featList"></div>
+      <button id="startBtn" class="mt">Start verification</button>
+      <div class="note">This is a sandbox demo. In production, the final result is delivered to your backend via a signed webhook.</div>
+    </div>
+  </section>
+
+  <!-- FLOW -->
+  <section id="flow" class="hide">
+    <div class="card">
+      <h2 style="margin:0 0 4px;font-size:18px">Complete your verification</h2>
+      <p style="margin:0 0 16px;color:var(--muted);font-size:13px">Provide the images below, then run the checks.</p>
+      <div id="uploads"></div>
+      <div id="steps" class="mt"></div>
+      <button id="runBtn" class="mt">Run verification</button>
+      <div id="flowErr" class="err"></div>
+    </div>
+  </section>
+
+  <!-- PROCESSING -->
+  <section id="processing" class="hide">
+    <div class="card center">
+      <div class="spin"></div>
+      <p style="color:var(--muted);font-size:14px" id="procMsg">Processing your verification…</p>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="hide">
+    <div class="card">
+      <div id="resIc" class="res-ic"></div>
+      <h2 id="resTitle" class="res-title"></h2>
+      <p id="resSub" class="res-sub"></p>
+      <div id="resChecks"></div>
+      <div class="kv">Session ID<code id="resSid"></code></div>
+      <div class="note" id="resNote"></div>
+      <button class="ghost mt" onclick="location.reload()">Run another demo</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const API = (p, opts={}) => fetch(`/api/${p}`, opts).then(r => r.json());
+let SESSION = null; // {session_id, session_token, features}
+
+const FEATURE_META = {
+  id_verification: {icon:'🪪', name:'ID Document', desc:'OCR + authenticity of a government ID'},
+  liveness:        {icon:'🙂', name:'Liveness',    desc:'Confirms a live person (anti-spoof)'},
+  face_match:      {icon:'🧑‍🤝‍🧑', name:'Face Match',  desc:'1:1 match of selfie to the ID photo'},
+  age:             {icon:'🔞', name:'Age Check',    desc:'Zero-knowledge age proof'},
+  credential:      {icon:'📜', name:'Credential',   desc:'Professional license verification'},
+};
+// Documents each feature needs (req = required)
+const FEATURE_DOCS = {
+  id_verification: [{t:'id_front',label:'ID — front',req:true},{t:'id_back',label:'ID — back (optional)',req:false}],
+  liveness:        [{t:'selfie',label:'Selfie',req:true}],
+  face_match:      [{t:'id_front',label:'ID — front',req:true},{t:'selfie',label:'Selfie',req:true}],
+};
+
+const STATUS = {
+  APPROVED:  {icon:'✓', bg:'var(--okbg)',  fg:'var(--ok)',  title:'Verification Approved', sub:'The identity has been successfully verified.'},
+  DECLINED:  {icon:'✕', bg:'var(--badbg)', fg:'var(--bad)', title:'Verification Declined', sub:'We could not verify the identity from the information provided.'},
+  IN_REVIEW: {icon:'⏳', bg:'var(--warnbg)',fg:'var(--warn)',title:'Under Review',          sub:'This verification needs a manual review before a final decision.'},
+  EXPIRED:   {icon:'⌛', bg:'var(--idlebg)',fg:'var(--idle)',title:'Session Expired',        sub:'This verification session timed out before it was completed.'},
+  ABANDONED: {icon:'—', bg:'var(--idlebg)',fg:'var(--idle)',title:'Verification Abandoned', sub:'The session was closed before completion.'},
+  IN_PROGRESS:{icon:'…',bg:'#e7f5ff',      fg:'#1971c2',    title:'In Progress',            sub:'This verification has not finished yet.'},
+  NOT_STARTED:{icon:'…',bg:'#e7f5ff',      fg:'#1971c2',    title:'Not Started',            sub:'This verification has not started yet.'},
+};
+
+const show = id => { ['landing','flow','processing','result'].forEach(s=>document.getElementById(s).classList.toggle('hide', s!==id)); };
+const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+
+// Render landing feature list
+(function renderFeatures(){
+  const list = document.getElementById('featList');
+  ['id_verification','liveness','face_match'].forEach(f=>{
+    const m = FEATURE_META[f];
+    const row = el('div','feat');
+    row.innerHTML = `<div class="ic">${m.icon}</div><div><b>${m.name}</b><span>${m.desc}</span></div>`;
+    list.appendChild(row);
+  });
+})();
+
+document.getElementById('startBtn').onclick = async () => {
+  document.getElementById('startBtn').disabled = true;
+  const r = await API('demo/start', {method:'POST', headers:{'Accept':'application/json'}});
+  if(!r.success){ alert(r.error?.message||'Could not start demo'); document.getElementById('startBtn').disabled=false; return; }
+  SESSION = r.data;
+  buildFlow();
+  show('flow');
+};
+
+function buildFlow(){
+  // Unique documents across all features (preserve order)
+  const seen = new Set(); const docs = [];
+  SESSION.features.forEach(f => (FEATURE_DOCS[f]||[]).forEach(d => { if(!seen.has(d.t)){seen.add(d.t); docs.push(d);} }));
+
+  const up = document.getElementById('uploads'); up.innerHTML='';
+  docs.forEach(d=>{
+    up.appendChild(el('label','file', d.label));
+    const inp = el('input'); inp.type='file'; inp.accept='image/*'; inp.dataset.t=d.t; inp.dataset.req=d.req;
+    up.appendChild(inp);
+  });
+
+  const steps = document.getElementById('steps'); steps.innerHTML='';
+  SESSION.features.forEach(f=>{
+    const m = FEATURE_META[f];
+    const s = el('div','step'); s.id = `step-${f}`;
+    s.innerHTML = `<h3>${m.name} <span class="badge" id="b-${f}">pending</span></h3>`;
+    steps.appendChild(s);
+  });
+}
+
+document.getElementById('runBtn').onclick = async () => {
+  const btn = document.getElementById('runBtn'); const errBox = document.getElementById('flowErr');
+  errBox.textContent='';
+  const inputs = [...document.querySelectorAll('#uploads input[type=file]')];
+
+  // Validate required docs
+  for(const inp of inputs){ if(inp.dataset.req==='true' && !inp.files[0]){ errBox.textContent = `Please provide: ${inp.previousSibling.textContent}`; return; } }
+  btn.disabled = true;
+
+  try{
+    // 1) Upload all provided documents
+    for(const inp of inputs){
+      if(!inp.files[0]) continue;
+      const fd = new FormData(); fd.append('type', inp.dataset.t); fd.append('image', inp.files[0]);
+      const u = await fetch(`/api/hosted/${SESSION.session_token}/documents`, {method:'POST', body:fd}).then(r=>r.json());
+      if(!u.success) throw new Error(u.error?.message||'Upload failed');
+    }
+    show('processing');
+
+    // 2) Run each feature check in order
+    for(const f of SESSION.features){
+      setBadge(f,'running');
+      const route = f.replaceAll('_','-');
+      const res = await API(`hosted/${SESSION.session_token}/run/${route}`, {method:'POST', headers:{'Accept':'application/json'}});
+      if(!res.success){
+        // a missing-doc / validation error before the engine ran
+        setBadge(f,'failed');
+        throw new Error(res.error?.message||`${f} failed`);
+      }
+      setBadge(f, res.data.check.status);
+      // If the session reached a terminal decision early (e.g. a required check failed), stop.
+      if(['APPROVED','DECLINED','EXPIRED','ABANDONED'].includes(res.data.session_status)) break;
+    }
+
+    // 3) Fetch authoritative final status and render results
+    await renderResult();
+  }catch(e){
+    show('flow'); btn.disabled=false; errBox.textContent = e.message;
+  }
+};
+
+function setBadge(f, status){ const b=document.getElementById(`b-${f}`); if(b){ b.textContent=status; b.className=`badge ${status}`; } }
+
+async function renderResult(){
+  const r = await API(`demo/status/${SESSION.session_id}`);
+  if(!r.success){ show('flow'); document.getElementById('flowErr').textContent='Could not load results'; return; }
+  const d = r.data;
+  const cfg = STATUS[d.status] || {icon:'?',bg:'var(--idlebg)',fg:'var(--idle)',title:d.status,sub:'Verification processed.'};
+
+  const ic = document.getElementById('resIc'); ic.textContent=cfg.icon; ic.style.background=cfg.bg; ic.style.color=cfg.fg;
+  document.getElementById('resTitle').textContent = cfg.title;
+  document.getElementById('resTitle').style.color = cfg.fg;
+  document.getElementById('resSub').textContent = cfg.sub;
+  document.getElementById('resSid').textContent = d.session_id;
+  document.getElementById('resNote').textContent =
+    'This is a demo session. In production, verification data is returned to your backend via a signed webhook.';
+
+  // Per-check breakdown
+  const cw = document.getElementById('resChecks'); cw.innerHTML='';
+  (d.checks||[]).forEach(c=>{
+    const m = FEATURE_META[c.type] || {name:c.type};
+    const s = el('div','step');
+    const extra = c.error ? `<div class="err">${c.error}</div>` : '';
+    s.innerHTML = `<h3>${m.name} <span class="badge ${c.status}">${c.status}</span></h3>${extra}`;
+    cw.appendChild(s);
+  });
+
+  show('result');
+}
+</script>
+</body>
+</html>

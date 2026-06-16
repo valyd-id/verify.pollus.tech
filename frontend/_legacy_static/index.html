@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Valyd Verify</title>
+<style>
+  :root { --brand:#3b5bdb; --ok:#2b8a3e; --bad:#c92a2a; --muted:#868e96; }
+  * { box-sizing:border-box; font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
+  body { margin:0; background:#f1f3f5; color:#212529; }
+  .card { max-width:440px; margin:32px auto; background:#fff; border-radius:16px; padding:24px; box-shadow:0 6px 24px rgba(0,0,0,.08); }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:13px; margin-bottom:20px; }
+  .step { border:1px solid #e9ecef; border-radius:12px; padding:14px; margin-bottom:12px; }
+  .step h3 { margin:0 0 8px; font-size:15px; text-transform:capitalize; }
+  .badge { font-size:11px; padding:2px 8px; border-radius:999px; background:#e9ecef; color:#495057; }
+  .badge.passed { background:#d3f9d8; color:var(--ok); }
+  .badge.failed { background:#ffe3e3; color:var(--bad); }
+  .badge.review { background:#fff3bf; color:#996a13; }
+  input[type=file] { font-size:13px; margin:6px 0; width:100%; }
+  button { background:var(--brand); color:#fff; border:0; border-radius:8px; padding:9px 14px; font-size:14px; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .result { margin-top:18px; padding:16px; border-radius:12px; text-align:center; font-weight:600; }
+  .result.APPROVED { background:#d3f9d8; color:var(--ok); }
+  .result.DECLINED { background:#ffe3e3; color:var(--bad); }
+  .result.IN_REVIEW { background:#fff3bf; color:#996a13; }
+  .err { color:var(--bad); font-size:12px; }
+  .row { display:flex; gap:8px; align-items:center; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Identity verification</h1>
+  <div class="sub" id="sub">Powered by Valyd</div>
+  <div id="steps"></div>
+  <div id="result"></div>
+  <div class="row" style="margin-top:12px;">
+    <button id="declineBtn" style="background:#e9ecef;color:#495057;">Cancel</button>
+  </div>
+</div>
+<script>
+const token = location.pathname.split('/').filter(Boolean).pop();
+const api = (p, opts={}) => fetch(`/api/hosted/${token}/${p}`, opts).then(r => r.json());
+const FEATURE_DOCS = {
+  id_verification: ['id_front','id_back'],
+  liveness: ['selfie'],
+  face_match: ['id_front','selfie'],
+};
+
+async function uploadFile(type, file) {
+  const fd = new FormData();
+  fd.append('type', type);
+  fd.append('image', file);
+  return api('documents', { method:'POST', body:fd });
+}
+
+async function runCheck(feature) {
+  const route = feature.replaceAll('_','-');
+  return api(`run/${route}`, { method:'POST', headers:{'Accept':'application/json'} });
+}
+
+function render(state) {
+  document.getElementById('sub').textContent = `Session ${state.session_id.slice(0,8)} · ${state.status}`;
+  const wrap = document.getElementById('steps');
+  wrap.innerHTML = '';
+  for (const step of state.steps) {
+    const docs = FEATURE_DOCS[step.feature] || [];
+    const div = document.createElement('div');
+    div.className = 'step';
+    div.innerHTML = `<h3>${step.feature.replaceAll('_',' ')} <span class="badge ${step.status}">${step.status}</span></h3>`;
+    docs.forEach(dt => {
+      const inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'image/*'; inp.dataset.doc = dt;
+      inp.onchange = async e => { if (e.target.files[0]) { inp.disabled = true; await uploadFile(dt, e.target.files[0]); inp.insertAdjacentText('afterend', ` ✓ ${dt} uploaded`); } };
+      const label = document.createElement('div'); label.textContent = dt; label.style.fontSize='12px'; label.style.color='#868e96';
+      div.appendChild(label); div.appendChild(inp);
+    });
+    if (step.status === 'pending') {
+      const btn = document.createElement('button');
+      btn.textContent = `Run ${step.feature.replaceAll('_',' ')}`;
+      btn.onclick = async () => {
+        btn.disabled = true;
+        const res = await runCheck(step.feature);
+        if (!res.success) { const e = document.createElement('div'); e.className='err'; e.textContent = res.error?.message || 'Check failed'; div.appendChild(e); btn.disabled = false; }
+        await refresh();
+      };
+      div.appendChild(btn);
+    }
+    wrap.appendChild(div);
+  }
+  const terminal = ['APPROVED','DECLINED','ABANDONED','EXPIRED','IN_REVIEW'];
+  if (terminal.includes(state.status)) {
+    const r = document.getElementById('result');
+    r.className = `result ${state.status}`;
+    r.textContent = state.status === 'APPROVED' ? '✓ Verification approved'
+      : state.status === 'IN_REVIEW' ? '⏳ Under review'
+      : '✕ Verification ' + state.status.toLowerCase();
+    document.getElementById('declineBtn').style.display = 'none';
+  }
+}
+
+async function refresh() {
+  const res = await api('state');
+  if (res.success) render(res.data);
+  else document.getElementById('sub').textContent = res.error?.message || 'Session error';
+}
+
+document.getElementById('declineBtn').onclick = async () => { await api('decline',{method:'POST'}); await refresh(); };
+refresh();
+</script>
+</body>
+</html>
