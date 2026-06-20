@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Console\AppController;
 use App\Http\Controllers\Console\AuthController;
+use App\Http\Controllers\Console\BillingController;
 use App\Http\Controllers\Console\ServiceController;
 use App\Http\Controllers\Console\SessionController as ConsoleSessionController;
 use App\Http\Controllers\Console\WebhookController;
@@ -62,6 +63,11 @@ Route::prefix('console')->middleware('console.auth')->group(function () {
     Route::post('apps/{app}/webhook/rotate-secret', [WebhookController::class, 'rotateSecret']);
 
     Route::get('apps/{app}/sessions', [ConsoleSessionController::class, 'index']);
+
+    // Prepaid account balance (per console user, across all their apps).
+    Route::get('billing/balance', [BillingController::class, 'balance']);
+    Route::post('billing/top-up', [BillingController::class, 'topUp']);
+    Route::get('billing/transactions', [BillingController::class, 'transactions']);
 });
 
 /*
@@ -95,6 +101,7 @@ Route::prefix('v2')->middleware('project.key')->group(function () {
     Route::post('face-match', [StandaloneController::class, 'faceMatch']);
     Route::post('age-verification', [StandaloneController::class, 'ageVerification']);
     Route::post('credential-verification', [StandaloneController::class, 'credentialVerification']);
+    Route::post('location', [StandaloneController::class, 'location']);
 
     // KYC + License in one synchronous call (ID + liveness + face match, then the
     // license checked against the OCR'd name).

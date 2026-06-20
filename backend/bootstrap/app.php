@@ -22,5 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\App\Exceptions\InsufficientBalanceException $e, $request) {
+            return \App\Helpers\GlobalHelper::apiError(
+                'insufficient_balance',
+                $e->getMessage(),
+                402,
+                ['required' => round($e->required, 4), 'available' => round($e->available, 4)],
+            );
+        });
     })->create();

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutGrid, Users, Workflow, Webhook, Boxes, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Users, Workflow, Webhook, Boxes, Wallet, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
 import { AppSwitcher } from "./AppSwitcher";
 
 type Item = { label: string; icon: LucideIcon; to: string };
@@ -10,6 +10,7 @@ const NAV: Item[] = [
   { label: "Workflows", icon: Workflow, to: "/dashboard/workflows" },
   { label: "Webhooks", icon: Webhook, to: "/dashboard/webhooks" },
   { label: "Apps & Keys", icon: Boxes, to: "/dashboard/apps" },
+  { label: "Billing", icon: Wallet, to: "/dashboard/billing" },
   { label: "Settings", icon: Settings, to: "/dashboard/settings" },
 ];
 

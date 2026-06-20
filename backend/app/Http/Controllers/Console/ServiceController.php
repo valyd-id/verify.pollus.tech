@@ -17,6 +17,7 @@ class ServiceController extends Controller
         ['id' => 'face_match', 'name' => 'Face Match', 'description' => '1:1 match of a selfie against the ID portrait.', 'icon' => 'face'],
         ['id' => 'age', 'name' => 'Age Verification', 'description' => 'Zero-knowledge age-band proof (18+, 21+, …).', 'icon' => 'cake'],
         ['id' => 'credential', 'name' => 'License Verification', 'description' => 'Verify a professional license against official state registries — no ID required.', 'icon' => 'badge'],
+        ['id' => 'location', 'name' => 'Location', 'description' => 'Capture the user’s device GPS location during verification.', 'icon' => 'pin'],
     ];
 
     public function index()

@@ -17,6 +17,7 @@ class VerificationCheck extends Model
     public const TYPE_FACE_MATCH = 'face_match';
     public const TYPE_AGE = 'age';
     public const TYPE_CREDENTIAL = 'credential';
+    public const TYPE_LOCATION = 'location';
 
     protected $fillable = [
         'session_id',

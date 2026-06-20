@@ -10,6 +10,7 @@ import { Workflows } from "./dashboard/pages/Workflows";
 import { Webhooks } from "./dashboard/pages/Webhooks";
 import { Verifications } from "./dashboard/pages/Verifications";
 import { Settings } from "./dashboard/pages/Settings";
+import { Billing } from "./dashboard/pages/Billing";
 
 /**
  * Surfaces sharing this SPA:
@@ -59,6 +60,7 @@ export function App() {
             <Route path="workflows" element={<Workflows />} />
             <Route path="webhooks" element={<Webhooks />} />
             <Route path="apps" element={<Apps />} />
+            <Route path="billing" element={<Billing />} />
             <Route path="settings" element={<Settings />} />
           </Route>
 

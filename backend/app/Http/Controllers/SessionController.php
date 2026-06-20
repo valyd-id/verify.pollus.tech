@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\GlobalHelper;
 use App\Models\VerificationProject;
 use App\Models\VerificationSession;
+use App\Services\BillingService;
 use App\Services\SessionService;
 use Illuminate\Http\Request;
 
@@ -14,8 +15,10 @@ use Illuminate\Http\Request;
  */
 class SessionController extends Controller
 {
-    public function __construct(private SessionService $sessions)
-    {
+    public function __construct(
+        private SessionService $sessions,
+        private BillingService $billing,
+    ) {
     }
 
     private function project(Request $request): VerificationProject
@@ -39,6 +42,13 @@ class SessionController extends Controller
         $workflow = $project->workflows()->where('is_active', true)->find($validated['workflow_id']);
         if (!$workflow) {
             return GlobalHelper::apiError('workflow_not_found', 'No active workflow found with that id for this project.', 404);
+        }
+
+        // Upfront guard: don't start a hosted flow the account can't pay for. Each
+        // check is charged as the end-user completes it; this just blocks early
+        // (402) if the balance can't cover the whole workflow. Throws → 402.
+        if ($owner = $project->owner) {
+            $this->billing->assertCanAfford($owner, $this->billing->costForFeatures($workflow->features));
         }
 
         $session = $this->sessions->create(

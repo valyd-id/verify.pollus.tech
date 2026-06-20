@@ -1,10 +1,35 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
-import { Menu, X, LogOut, ExternalLink } from "lucide-react";
+import { Outlet, Link } from "react-router-dom";
+import { Menu, X, LogOut, ExternalLink, Wallet, Plus } from "lucide-react";
 import { Sidebar } from "./components/Sidebar";
 import { EmailPrompt } from "./components/EmailPrompt";
 import { useAuth } from "./auth";
 import { AppsProvider } from "./apps";
+import { BalanceProvider, useBalance, formatMoney } from "./balance";
+
+// Compact balance chip shown in the top bar; links to the Billing page and turns
+// amber when the account is running low.
+function BalancePill() {
+  const { balance, currency, ready } = useBalance();
+  const low = ready && balance < 1;
+  return (
+    <Link
+      to="/dashboard/billing"
+      title="Account balance"
+      className={`group inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium tabular-nums transition-colors ${
+        low
+          ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+          : "border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:text-indigo-700"
+      }`}
+    >
+      <Wallet className={`h-4 w-4 ${low ? "text-amber-500" : "text-slate-400 group-hover:text-indigo-500"}`} />
+      {ready ? formatMoney(balance, currency) : "—"}
+      <span className={`ml-0.5 grid h-4 w-4 place-items-center rounded-full ${low ? "bg-amber-500 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-indigo-100 group-hover:text-indigo-600"}`}>
+        <Plus className="h-3 w-3" strokeWidth={2.5} />
+      </span>
+    </Link>
+  );
+}
 
 // Auth is enforced by <RequireAuth> in App.tsx, so a user is guaranteed here.
 export function DashboardLayout() {
@@ -16,6 +41,7 @@ export function DashboardLayout() {
 
   return (
     <AppsProvider>
+      <BalanceProvider>
       {!user.email && !emailSkipped && (
         <EmailPrompt
           onDone={async () => {
@@ -53,7 +79,9 @@ export function DashboardLayout() {
                 Documentation <ExternalLink className="h-3 w-3" />
               </a>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
+              <BalancePill />
+              <div className="hidden h-6 w-px bg-slate-200 sm:block" />
               <div className="hidden text-right sm:block">
                 <div className="text-sm font-medium text-slate-800">{user.name ?? "Developer"}</div>
                 <div className="text-xs text-slate-400">{user.email}</div>
@@ -72,6 +100,7 @@ export function DashboardLayout() {
           </main>
         </div>
       </div>
+      </BalanceProvider>
     </AppsProvider>
   );
 }

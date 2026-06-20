@@ -12,12 +12,13 @@ import {
 } from "lucide-react";
 import { X } from "lucide-react";
 import { CameraCapture } from "./CameraCapture";
+import { LocationCapture, type LocationBody } from "./LocationCapture";
 import { CredentialStep } from "./CredentialStep";
 import { getState, getResult, uploadDocument, runCheck, type HostedResult } from "../lib/api";
 import { getEmbedContext, postToParent } from "../lib/embed";
 
 type DocType = "id_front" | "id_back" | "selfie";
-type Phase = "loading" | "intro" | "capture" | "credential" | "processing" | "result" | "redirecting" | "fatal";
+type Phase = "loading" | "intro" | "capture" | "location" | "credential" | "processing" | "result" | "redirecting" | "fatal";
 
 const DOC_META: Record<DocType, { facing: "user" | "environment"; overlay: "card" | "oval"; title: string; hint: string; optional?: boolean }> = {
   id_front: { facing: "environment", overlay: "card", title: "Scan your ID — front", hint: "Place the front of your document inside the frame." },
@@ -31,6 +32,7 @@ const FEATURE_NAME: Record<string, string> = {
   face_match: "Face match",
   age: "Age check",
   credential: "License check",
+  location: "Location",
 };
 
 const FEATURE_DOCS: Record<string, DocType[]> = {
@@ -153,6 +155,7 @@ export function HostedFlow({ token }: { token: string }) {
   }, [token, finish]);
 
   const hasCredential = features.includes("credential");
+  const hasLocation = features.includes("location");
   const kycFeatures = features.filter((f) => f !== "credential");
 
   const surfaceTerminal = useCallback(async (): Promise<boolean> => {
@@ -163,7 +166,7 @@ export function HostedFlow({ token }: { token: string }) {
 
   // Phase 1: upload documents + run the KYC checks (everything except credential),
   // capturing the OCR'd name. Then branch to the license form, or finish.
-  const runKyc = useCallback(async (caps: Partial<Record<DocType, string>>) => {
+  const runKyc = useCallback(async (caps: Partial<Record<DocType, string>>, location: LocationBody | null) => {
     setPhase("processing");
     setError(null);
     try {
@@ -175,7 +178,10 @@ export function HostedFlow({ token }: { token: string }) {
       let name: string | null = null;
       for (const f of kycFeatures) {
         setChecks((c) => ({ ...c, [f]: "running" }));
-        const res = await runCheck(token, f.replaceAll("_", "-"), {});
+        // Location carries the captured coordinates (or a denial flag); every
+        // other KYC check runs against the already-uploaded documents.
+        const body: Record<string, unknown> = f === "location" ? (location ?? { denied: true }) : {};
+        const res = await runCheck(token, f.replaceAll("_", "-"), body);
         if (!res.success || !res.data) { setChecks((c) => ({ ...c, [f]: "failed" })); throw new Error(res.error?.message || `${FEATURE_NAME[f] ?? f} failed`); }
         setChecks((c) => ({ ...c, [f]: res.data!.check.status }));
         if (f === "id_verification") name = (res.data.check.data?.fields?.full_name as string) ?? null;
@@ -218,15 +224,26 @@ export function HostedFlow({ token }: { token: string }) {
   // license form (credential-only workflows have no documents).
   const afterCaptures = useCallback((caps: Partial<Record<DocType, string>>) => {
     setCaptures(caps);
-    if (kycFeatures.length) void runKyc(caps);
+    // Location needs a user gesture + permission prompt, so capture it on its own
+    // step before running the checks.
+    if (hasLocation) { setPhase("location"); return; }
+    if (kycFeatures.length) void runKyc(caps, null);
     else setPhase("credential");
-  }, [kycFeatures.length, runKyc]);
+  }, [hasLocation, kycFeatures.length, runKyc]);
+
+  // After the location step: continue into the remaining KYC checks (which include
+  // the location check itself), or jump to the license form.
+  const afterLocation = useCallback((location: LocationBody) => {
+    if (kycFeatures.length) void runKyc(captures, location);
+    else setPhase("credential");
+  }, [kycFeatures.length, runKyc, captures]);
 
   const startFlow = useCallback(() => {
     if (docs.length) setPhase("capture");
-    else if (kycFeatures.length) void runKyc(captures);
+    else if (hasLocation) setPhase("location");
+    else if (kycFeatures.length) void runKyc(captures, null);
     else setPhase("credential");
-  }, [docs.length, kycFeatures.length, runKyc, captures]);
+  }, [docs.length, hasLocation, kycFeatures.length, runKyc, captures]);
 
   const onCaptured = (dataUrl: string) => {
     const type = docs[docIndex];
@@ -297,6 +314,15 @@ export function HostedFlow({ token }: { token: string }) {
           onCapture={onCaptured}
           onSkip={DOC_META[doc].optional ? onSkip : undefined}
         />
+        {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
+      </Shell>
+    );
+  }
+
+  if (phase === "location") {
+    return (
+      <Shell>
+        <LocationCapture onCapture={afterLocation} />
         {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </Shell>
     );

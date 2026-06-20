@@ -11,6 +11,8 @@ use App\Services\Checks\CredentialRunner;
 use App\Services\Checks\FaceMatchRunner;
 use App\Services\Checks\IdVerificationRunner;
 use App\Services\Checks\LivenessRunner;
+use App\Services\Checks\LocationRunner;
+use App\Services\BillingService;
 use App\Services\SessionService;
 use App\Support\ImageInput;
 use Illuminate\Http\Request;
@@ -30,6 +32,8 @@ class HostedController extends Controller
         private FaceMatchRunner $faceMatchRunner,
         private AgeRunner $ageRunner,
         private CredentialRunner $credentialRunner,
+        private LocationRunner $locationRunner,
+        private BillingService $billing,
     ) {
     }
 
@@ -138,17 +142,22 @@ class HostedController extends Controller
             return GlobalHelper::apiError('feature_not_in_workflow', "Feature '{$feature}' is not part of this session's workflow.", 400);
         }
 
-        $result = match ($feature) {
+        // Charge the project's account for this check before running it; the
+        // wrapper refunds automatically if it throws or returns a validation
+        // error (i.e. no billable work happened). Ownerless sessions aren't billed.
+        $owner = $session->project?->owner;
+        $result = $this->billing->runCharged($owner, $feature, fn () => match ($feature) {
             VerificationCheck::TYPE_ID => $this->runId($session),
             VerificationCheck::TYPE_LIVENESS => $this->runLiveness($session),
             VerificationCheck::TYPE_FACE_MATCH => $this->runFaceMatch($session),
             VerificationCheck::TYPE_AGE => $this->runAge($session, $request),
             VerificationCheck::TYPE_CREDENTIAL => $this->runCredential($session, $request),
+            VerificationCheck::TYPE_LOCATION => $this->runLocation($session, $request),
             default => null,
-        };
+        }, $session->id);
 
         if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result; // an early validation error
+            return $result; // an early validation error (already refunded)
         }
 
         $session = $this->sessions->recordCheck($session, $result);
@@ -232,6 +241,25 @@ class HostedController extends Controller
         }
         $bands = $session->settings['age_bands'] ?? [];
         return $this->ageRunner->run((string) $dob, $bands);
+    }
+
+    private function runLocation(VerificationSession $session, Request $request)
+    {
+        $denied = $request->boolean('denied');
+        if ($denied) {
+            return $this->locationRunner->run(null, null, null, true);
+        }
+
+        $validated = $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'accuracy' => 'nullable|numeric',
+        ]);
+        return $this->locationRunner->run(
+            (float) $validated['latitude'],
+            (float) $validated['longitude'],
+            isset($validated['accuracy']) ? (float) $validated['accuracy'] : null,
+        );
     }
 
     private function runCredential(VerificationSession $session, Request $request)

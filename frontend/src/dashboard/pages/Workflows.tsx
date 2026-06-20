@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Plus, Trash2, Copy, Check, MoreHorizontal, User, Layers,
-  IdCard, ScanFace, Smile, Cake, BadgeCheck, Workflow as WorkflowIcon, type LucideIcon,
+  IdCard, ScanFace, Smile, Cake, BadgeCheck, MapPin, Workflow as WorkflowIcon, type LucideIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { api, type Service, type Workflow } from "../api";
@@ -16,6 +16,7 @@ const FEATURE_META: Record<string, { icon: LucideIcon; min: number; max: number 
   face_match: { icon: Smile, min: 0.05, max: 0.1 },
   age: { icon: Cake, min: 0.02, max: 0.05 },
   credential: { icon: BadgeCheck, min: 0.2, max: 0.32 },
+  location: { icon: MapPin, min: 0.01, max: 0.02 },
 };
 
 function priceRange(features: string[]): string {
@@ -31,6 +32,7 @@ function workflowType(features: string[]): string {
   if (hasCredential) return "License";
   if (hasId) return "KYC";
   if (features.includes("age")) return "Age";
+  if (features.length === 1 && features.includes("location")) return "Location";
   return "Identity";
 }
 
@@ -38,6 +40,8 @@ function workflowType(features: string[]): string {
 const PRESETS: { label: string; name: string; features: string[] }[] = [
   { label: "License Verification", name: "License Verification", features: ["credential"] },
   { label: "KYC + License", name: "KYC + License", features: ["id_verification", "liveness", "face_match", "credential"] },
+  { label: "Location", name: "Location Check", features: ["location"] },
+  { label: "KYC + Location", name: "KYC + Location", features: ["id_verification", "liveness", "face_match", "location"] },
 ];
 
 function timeAgo(iso: string): string {

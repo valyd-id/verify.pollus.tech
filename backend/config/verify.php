@@ -30,5 +30,21 @@ return [
         'face_match',
         'age',
         'credential',
+        'location',
+    ],
+
+    // Billing currency for the prepaid account balance (display only for now).
+    'currency' => env('VERIFY_CURRENCY', 'USD'),
+
+    // Per-API cost charged against the account balance, by feature key. A hosted
+    // session's upfront guard sums its workflow's features; each check deducts its
+    // own cost as it runs (refunded on our-side errors).
+    'pricing' => [
+        'id_verification' => (float) env('VERIFY_PRICE_ID', 0.13),
+        'liveness' => (float) env('VERIFY_PRICE_LIVENESS', 0.08),
+        'face_match' => (float) env('VERIFY_PRICE_FACE_MATCH', 0.10),
+        'age' => (float) env('VERIFY_PRICE_AGE', 0.05),
+        'credential' => (float) env('VERIFY_PRICE_CREDENTIAL', 0.32),
+        'location' => (float) env('VERIFY_PRICE_LOCATION', 0.02),
     ],
 ];

@@ -60,6 +60,16 @@ export type Workflow = { id: string; name: string; features: string[]; settings:
 export type Webhook = { webhook_url: string | null; has_signing_secret: boolean; signing_secret_hint: string | null };
 export type Session = { session_id: string; status: string; mode: string; vendor_data: string | null; features: string[]; created_at: string; decided_at: string | null };
 export type Stats = { total: number; approved: number; declined: number; in_review: number };
+export type Balance = { balance: number; currency: string };
+export type BillingTxn = {
+  id: number;
+  type: "credit" | "debit" | "refund";
+  amount: number;
+  balance_after: number;
+  reason: string;
+  reference: string | null;
+  created_at: string;
+};
 
 export const api = {
   // auth
@@ -93,4 +103,9 @@ export const api = {
   rotateSecret: (app: number) => req<{ signing_secret: string }>(`/console/apps/${app}/webhook/rotate-secret`, { method: "POST" }),
 
   sessions: (app: number) => req<{ sessions: Session[]; stats: Stats }>(`/console/apps/${app}/sessions`),
+
+  // billing (per-account prepaid balance)
+  balance: () => req<Balance>("/console/billing/balance"),
+  topUp: (amount: number) => req<Balance>("/console/billing/top-up", { method: "POST", body: JSON.stringify({ amount }) }),
+  transactions: (limit = 20) => req<{ transactions: BillingTxn[] }>(`/console/billing/transactions?limit=${limit}`),
 };

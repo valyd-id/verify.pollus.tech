@@ -19,11 +19,17 @@ class ConsoleUser extends Model
     {
         return [
             'profile' => 'array',
+            'balance' => 'decimal:4',
         ];
     }
 
     public function projects()
     {
         return $this->hasMany(VerificationProject::class, 'user_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(BillingTransaction::class, 'user_id');
     }
 }
