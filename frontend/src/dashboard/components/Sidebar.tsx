@@ -16,7 +16,7 @@ const NAV: Item[] = [
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
+    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-border bg-card">
       <div className="p-3">
         <AppSwitcher onNavigate={onNavigate} />
       </div>
@@ -30,13 +30,13 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors ${
-                isActive ? "bg-indigo-50 font-medium text-indigo-700" : "text-slate-600 hover:bg-slate-50"
+                isActive ? "bg-primary-soft font-medium text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <item.icon className={`h-[18px] w-[18px] ${isActive ? "text-indigo-600" : "text-slate-400"}`} strokeWidth={1.9} />
+                <item.icon className={`h-[18px] w-[18px] ${isActive ? "text-primary" : "text-muted-foreground"}`} strokeWidth={1.9} />
                 {item.label}
               </>
             )}
@@ -44,8 +44,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="flex items-center gap-2 border-t border-slate-100 px-4 py-3.5 text-sm font-medium text-slate-700">
-        <ShieldCheck className="h-4 w-4 text-indigo-600" />
+      <div className="flex items-center gap-2 border-t border-border px-4 py-3.5 text-sm font-medium text-foreground">
+        <ShieldCheck className="h-4 w-4 text-primary" />
         Valyd Verify
       </div>
     </aside>

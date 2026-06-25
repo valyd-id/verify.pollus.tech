@@ -46,6 +46,12 @@ class WorkflowController extends Controller
             'features' => 'required|array|min:1',
             'features.*' => 'string|in:' . implode(',', config('verify.features')),
             'settings' => 'nullable|array',
+            'settings.product' => 'nullable|in:verify,sso',
+            'settings.mode' => 'nullable|in:hosted,standalone',
+            'settings.recheck' => 'nullable|in:per_action,scheduled,expiry',
+            'settings.recheck_interval' => 'nullable|in:daily,weekly',
+            'settings.storage' => 'nullable|in:store,recapture',
+            'settings.reuse' => 'nullable|boolean',
         ]);
 
         $workflow = VerificationWorkflow::create([
@@ -68,6 +74,12 @@ class WorkflowController extends Controller
             'features' => 'sometimes|array|min:1',
             'features.*' => 'string|in:' . implode(',', config('verify.features')),
             'settings' => 'sometimes|nullable|array',
+            'settings.product' => 'nullable|in:verify,sso',
+            'settings.mode' => 'nullable|in:hosted,standalone',
+            'settings.recheck' => 'nullable|in:per_action,scheduled,expiry',
+            'settings.recheck_interval' => 'nullable|in:daily,weekly',
+            'settings.storage' => 'nullable|in:store,recapture',
+            'settings.reuse' => 'nullable|boolean',
             'is_active' => 'sometimes|boolean',
         ]);
         if (isset($validated['features'])) {

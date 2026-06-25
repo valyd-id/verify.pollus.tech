@@ -49,6 +49,7 @@ export type App = {
   description: string | null;
   logo: string | null;
   api_key_prefix: string;
+  api_key: string | null; // full key (revealable anytime); null for pre-storage keys
   webhook_url: string | null;
   is_active: boolean;
   is_default: boolean;
@@ -58,6 +59,16 @@ export type App = {
 export type Service = { id: string; name: string; description: string; icon: string };
 export type Workflow = { id: string; name: string; features: string[]; settings: unknown; is_active: boolean; created_at: string };
 export type Webhook = { webhook_url: string | null; has_signing_secret: boolean; signing_secret_hint: string | null };
+export type WebhookEndpoint = {
+  id: number;
+  name: string;
+  url: string;
+  events: string[] | null; // null = all events
+  is_active: boolean;
+  secret_hint: string | null;
+  signing_secret?: string | null; // full value only right after create/rotate
+  created_at: string;
+};
 export type Session = { session_id: string; status: string; mode: string; vendor_data: string | null; features: string[]; created_at: string; decided_at: string | null };
 export type Stats = { total: number; approved: number; declined: number; in_review: number };
 export type Balance = { balance: number; currency: string };
@@ -94,13 +105,22 @@ export const api = {
   rotateKey: (app: number) => req<{ app: App; api_key: string }>(`/console/apps/${app}/rotate-key`, { method: "POST" }),
 
   workflows: (app: number) => req<{ workflows: Workflow[] }>(`/console/apps/${app}/workflows`),
-  createWorkflow: (app: number, name: string, features: string[]) =>
-    req<{ workflow: Workflow }>(`/console/apps/${app}/workflows`, { method: "POST", body: JSON.stringify({ name, features }) }),
+  createWorkflow: (app: number, name: string, features: string[], settings?: Record<string, unknown>) =>
+    req<{ workflow: Workflow }>(`/console/apps/${app}/workflows`, { method: "POST", body: JSON.stringify({ name, features, ...(settings ? { settings } : {}) }) }),
   deleteWorkflow: (app: number, id: string) => req(`/console/apps/${app}/workflows/${id}`, { method: "DELETE" }),
 
   webhook: (app: number) => req<Webhook>(`/console/apps/${app}/webhook`),
   setWebhook: (app: number, webhook_url: string) => req<Webhook>(`/console/apps/${app}/webhook`, { method: "PUT", body: JSON.stringify({ webhook_url }) }),
   rotateSecret: (app: number) => req<{ signing_secret: string }>(`/console/apps/${app}/webhook/rotate-secret`, { method: "POST" }),
+
+  // Multiple webhook destinations
+  webhooks: (app: number) => req<{ endpoints: WebhookEndpoint[] }>(`/console/apps/${app}/webhooks`),
+  createWebhook: (app: number, payload: { name: string; url: string; events?: string[] | null }) =>
+    req<{ endpoint: WebhookEndpoint }>(`/console/apps/${app}/webhooks`, { method: "POST", body: JSON.stringify(payload) }),
+  updateWebhook: (app: number, id: number, payload: Partial<{ name: string; url: string; events: string[] | null; is_active: boolean }>) =>
+    req<{ endpoint: WebhookEndpoint }>(`/console/apps/${app}/webhooks/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteWebhook: (app: number, id: number) => req<{ deleted: boolean }>(`/console/apps/${app}/webhooks/${id}`, { method: "DELETE" }),
+  rotateWebhookSecret: (app: number, id: number) => req<{ endpoint: WebhookEndpoint }>(`/console/apps/${app}/webhooks/${id}/rotate-secret`, { method: "POST" }),
 
   sessions: (app: number) => req<{ sessions: Session[]; stats: Stats }>(`/console/apps/${app}/sessions`),
 

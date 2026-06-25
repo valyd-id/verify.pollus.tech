@@ -25,6 +25,9 @@ export type HostedState = {
   next_step: string | null;
   redirect_url: string | null;
   expires_at: string;
+  reuse: boolean;
+  pollus_id: string | null;
+  reuse_eligible: boolean;
 };
 
 export type HostedResult = {
@@ -81,6 +84,12 @@ export const runCheck = (token: string, check: string, payload: Record<string, u
     headers: J,
     body: JSON.stringify(payload),
   }).then((r) => asJson<CheckRun>(r));
+
+// Managed Identity by Valyd — returning user re-verifies with a selfie only,
+// matched against the verify-side copy. The session is already bound to the Valyd
+// identity at creation (the integrator passes the user's access token).
+export const reuseFace = (token: string, selfie: string) =>
+  fetch(`/api/hosted/${token}/reuse/face`, { method: "POST", headers: J, body: JSON.stringify({ selfie }) }).then((r) => asJson<{ match: boolean; score: number | null; session_status: string }>(r));
 
 export const credentialStates = (token: string) =>
   fetch(`/api/hosted/${token}/credential/states`, { headers: J }).then((r) =>

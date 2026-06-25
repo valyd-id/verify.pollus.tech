@@ -46,6 +46,13 @@ class VerificationWorkflow extends Model
             'liveness_threshold' => (int) config('verify.liveness_threshold'),
             // Age bands the client wants asserted, e.g. ["is_18_plus"].
             'age_bands' => [],
+            // New-flow wizard config (see the setup wizard).
+            'product' => 'verify',          // verify | sso
+            'mode' => 'hosted',             // hosted | standalone
+            'recheck' => null,              // per_action | scheduled | expiry (credential only)
+            'recheck_interval' => 'daily',  // daily | weekly (when recheck=scheduled)
+            'storage' => null,              // store | recapture (standalone reuse)
+            'reuse' => false,               // "verify once, reuse" enabled
         ], $this->settings ?? []);
     }
 }

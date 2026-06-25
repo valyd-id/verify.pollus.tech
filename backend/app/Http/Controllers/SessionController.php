@@ -6,6 +6,8 @@ use App\Helpers\GlobalHelper;
 use App\Models\VerificationProject;
 use App\Models\VerificationSession;
 use App\Services\BillingService;
+use App\Services\IdpClient;
+use App\Services\ReusableIdentityService;
 use App\Services\SessionService;
 use Illuminate\Http\Request;
 
@@ -18,6 +20,8 @@ class SessionController extends Controller
     public function __construct(
         private SessionService $sessions,
         private BillingService $billing,
+        private ReusableIdentityService $reusable,
+        private IdpClient $idp,
     ) {
     }
 
@@ -37,11 +41,40 @@ class SessionController extends Controller
             'redirect_url' => 'nullable|url',
             'ttl_seconds' => 'nullable|integer',
             'metadata' => 'nullable|array',
+            // "Managed Identity by Valyd": the integrator logs the user in with Valyd
+            // on their own site (TPSSO) and passes the resulting access token here so
+            // we can bind the session to that Valyd identity. Never sent to the browser.
+            'valyd_access_token' => 'nullable|string',
+            // Optional pre-resolved identity (trusted, API-key-authenticated caller).
+            'pollus_id' => 'nullable|string|max:255',
         ]);
 
         $workflow = $project->workflows()->where('is_active', true)->find($validated['workflow_id']);
         if (!$workflow) {
             return GlobalHelper::apiError('workflow_not_found', 'No active workflow found with that id for this project.', 404);
+        }
+
+        // Managed workflows ("Login with Valyd" / reuse) require a logged-in Valyd
+        // user. Validate the integrator-supplied access token against the IdP and
+        // bind the resulting pollus_id; the token's validity is the proof of login.
+        $settings = $workflow->effectiveSettings();
+        $requiresValyd = ($settings['product'] ?? null) === 'sso' || (bool) ($settings['reuse'] ?? false);
+        $pollusId = null;
+        if (!empty($validated['valyd_access_token'])) {
+            $info = $this->idp->userinfo($validated['valyd_access_token']);
+            if (!$info['ok']) {
+                return GlobalHelper::apiError('valyd_login_required', $info['error']['message'] ?? 'Valyd login is required.', 401);
+            }
+            $pollusId = $info['pollus_id'];
+        } elseif (!empty($validated['pollus_id'])) {
+            $pollusId = $validated['pollus_id'];
+        }
+        if ($requiresValyd && !$pollusId) {
+            return GlobalHelper::apiError(
+                'valyd_login_required',
+                'This workflow requires a logged-in Valyd user. Log the user in with Valyd and pass their valyd_access_token.',
+                401,
+            );
         }
 
         // Upfront guard: don't start a hosted flow the account can't pay for. Each
@@ -55,7 +88,7 @@ class SessionController extends Controller
             $project,
             $workflow,
             $workflow->features,
-            $workflow->effectiveSettings(),
+            $settings,
             [
                 'mode' => VerificationSession::MODE_HOSTED,
                 'vendor_data' => $validated['vendor_data'] ?? null,
@@ -63,6 +96,7 @@ class SessionController extends Controller
                 'redirect_url' => $validated['redirect_url'] ?? null,
                 'ttl_seconds' => $validated['ttl_seconds'] ?? null,
                 'metadata' => $validated['metadata'] ?? [],
+                'pollus_id' => $pollusId,
             ]
         );
 
@@ -118,12 +152,24 @@ class SessionController extends Controller
             'error' => $c->error,
         ]);
 
+        // For Valyd-linked sessions, surface the verified profile + licenses the
+        // integrator is entitled to (from verify's own reusable-identity store).
+        $identity = null;
+        if (!empty($session->pollus_id)) {
+            $rec = $this->reusable->find($session->project_id, $session->pollus_id);
+            if ($rec) {
+                $identity = $this->reusable->present($rec);
+            }
+        }
+
         return GlobalHelper::apiSuccess([
             'session_id' => $session->id,
             'status' => $session->status,
             'vendor_data' => $session->vendor_data,
+            'pollus_id' => $session->pollus_id,
             'decision' => $session->decision,
             'checks' => $checks,
+            'identity' => $identity,
             'decided_at' => $session->decided_at?->toIso8601String(),
         ]);
     }

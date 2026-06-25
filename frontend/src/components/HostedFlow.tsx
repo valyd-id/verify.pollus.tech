@@ -14,11 +14,11 @@ import { X } from "lucide-react";
 import { CameraCapture } from "./CameraCapture";
 import { LocationCapture, type LocationBody } from "./LocationCapture";
 import { CredentialStep } from "./CredentialStep";
-import { getState, getResult, uploadDocument, runCheck, type HostedResult } from "../lib/api";
+import { getState, getResult, uploadDocument, runCheck, reuseFace, type HostedResult } from "../lib/api";
 import { getEmbedContext, postToParent } from "../lib/embed";
 
 type DocType = "id_front" | "id_back" | "selfie";
-type Phase = "loading" | "intro" | "capture" | "location" | "credential" | "processing" | "result" | "redirecting" | "fatal";
+type Phase = "loading" | "intro" | "login_required" | "reuse" | "capture" | "location" | "credential" | "processing" | "result" | "redirecting" | "fatal";
 
 const DOC_META: Record<DocType, { facing: "user" | "environment"; overlay: "card" | "oval"; title: string; hint: string; optional?: boolean }> = {
   id_front: { facing: "environment", overlay: "card", title: "Scan your ID — front", hint: "Place the front of your document inside the frame." },
@@ -150,7 +150,14 @@ export function HostedFlow({ token }: { token: string }) {
         const rr = await getResult(token);
         if (rr.success && rr.data) { finish(rr.data); return; }
       }
-      setPhase("intro");
+      // Managed Identity by Valyd: the session is bound to the Valyd identity at
+      // creation (the integrator passes the user's token), so pollus_id is set here.
+      // Returning users with a stored record do selfie-only; first-timers fall
+      // through to the full workflow. A Managed session with no identity means the
+      // user wasn't logged in — ask them to sign in on the app first.
+      if (r.data.reuse && !r.data.pollus_id) setPhase("login_required");
+      else if (r.data.reuse && r.data.reuse_eligible) setPhase("reuse");
+      else setPhase("intro");
     })();
   }, [token, finish]);
 
@@ -245,6 +252,17 @@ export function HostedFlow({ token }: { token: string }) {
     else setPhase("credential");
   }, [docs.length, hasLocation, kycFeatures.length, runKyc, captures]);
 
+  const onReuseSelfie = useCallback(async (dataUrl: string) => {
+    setPhase("processing");
+    setError(null);
+    const r = await reuseFace(token, dataUrl);
+    if (!r.success || !r.data) { setError(r.error?.message || "Could not match your face."); setPhase("reuse"); return; }
+    if (!r.data.match) { setError("That didn't match your Valyd identity. Please try again."); setPhase("reuse"); return; }
+    const rr = await getResult(token);
+    if (rr.success && rr.data) { finish(rr.data); return; }
+    setError("Verified, but could not load your result."); setPhase("reuse");
+  }, [token, finish]);
+
   const onCaptured = (dataUrl: string) => {
     const type = docs[docIndex];
     const next = { ...captures, [type]: dataUrl };
@@ -270,6 +288,28 @@ export function HostedFlow({ token }: { token: string }) {
           <h2 className="font-display text-2xl text-foreground">Can't open this verification</h2>
           <p className="mt-2 text-sm text-muted-foreground">{fatal}</p>
         </div>
+      </Shell>
+    );
+  }
+
+  if (phase === "login_required") {
+    return (
+      <Shell>
+        <div className="text-center">
+          <div className="mx-auto h-14 w-14 rounded-2xl bg-primary-soft border border-border flex items-center justify-center text-primary mb-4"><ShieldCheck className="h-7 w-7" strokeWidth={1.75} /></div>
+          <h2 className="font-display text-3xl text-foreground">Sign in with Valyd first</h2>
+          <p className="mt-2 text-sm text-muted-foreground">This verification is linked to your Valyd identity. Please return to the app and sign in with Valyd, then start the verification again.</p>
+          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+        </div>
+      </Shell>
+    );
+  }
+
+  if (phase === "reuse") {
+    return (
+      <Shell>
+        <CameraCapture key="reuse-selfie" facingMode="user" overlay="oval" title="Take a selfie" hint="Match your face to your verified Valyd identity." onCapture={onReuseSelfie} />
+        {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
       </Shell>
     );
   }

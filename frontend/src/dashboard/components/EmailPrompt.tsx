@@ -22,12 +22,12 @@ export function EmailPrompt({ onDone }: { onDone: () => void }) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4">
       <motion.div variants={overlay} initial="hidden" animate="show" className="absolute inset-0 bg-slate-900/40" />
-      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
-        <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-indigo-50">
-          <Mail className="h-5 w-5 text-indigo-600" />
+      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-xl">
+        <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-primary-soft">
+          <Mail className="h-5 w-5 text-primary" />
         </div>
-        <h2 className="mt-4 text-center text-base font-semibold text-slate-900">Add your email</h2>
-        <p className="mt-1 text-center text-sm text-slate-500">
+        <h2 className="mt-4 text-center text-base font-semibold text-foreground">Add your email</h2>
+        <p className="mt-1 text-center text-sm text-muted-foreground">
           We didn't get an email from Valyd. Add one for receipts and notifications, or skip for now.
         </p>
 
@@ -40,21 +40,21 @@ export function EmailPrompt({ onDone }: { onDone: () => void }) {
           }}
           placeholder="you@example.com"
           autoFocus
-          className="mt-4 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+          className="mt-4 w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
         />
 
         <div className="mt-4 flex items-center gap-2">
           <button
             onClick={onDone}
             disabled={saving}
-            className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+            className="flex-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary disabled:opacity-50"
           >
             Skip
           </button>
           <button
             onClick={save}
             disabled={saving || email.trim() === ""}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             Save

@@ -34,6 +34,8 @@ class VerificationSession extends Model
         'status',
         'mode',
         'vendor_data',
+        'pollus_id',
+        'reused',
         'callback_url',
         'redirect_url',
         'session_token',
@@ -56,6 +58,7 @@ class VerificationSession extends Model
             'settings' => 'array',
             'metadata' => 'array',
             'decision' => 'array',
+            'reused' => 'boolean',
             'expires_at' => 'datetime',
             'decided_at' => 'datetime',
         ];

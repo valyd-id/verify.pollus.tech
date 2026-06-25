@@ -23,9 +23,9 @@ export function Apps() {
         <AppGeneral key={selected.id} app={selected} />
       ) : (
         <Card className="flex flex-col items-center justify-center px-6 py-16 text-center">
-          <span className="grid h-12 w-12 place-items-center rounded-xl bg-indigo-50 text-indigo-600"><Boxes className="h-6 w-6" /></span>
-          <h3 className="mt-4 text-base font-semibold text-slate-800">No apps yet</h3>
-          <p className="mt-1 text-sm text-slate-500">Create your first app to get an App ID and API key.</p>
+          <span className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"><Boxes className="h-6 w-6" /></span>
+          <h3 className="mt-4 text-base font-semibold text-foreground">No apps yet</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Create your first app to get an App ID and API key.</p>
           <Button className="mt-5" onClick={() => setCreating(true)}><Plus className="h-4 w-4" /> Create app</Button>
         </Card>
       )}
@@ -75,16 +75,16 @@ function CreateApplicationModal({ onClose, onCreated }: { onClose: () => void; o
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <motion.div variants={overlay} initial="hidden" animate="show" className="absolute inset-0 bg-slate-900/40" onClick={onClose} />
-      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
-        <button onClick={onClose} className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-full text-slate-400 hover:bg-slate-100">
+      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
+        <button onClick={onClose} className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-full text-muted-foreground hover:bg-secondary">
           <X className="h-4 w-4" />
         </button>
 
         <div className="flex flex-col sm:flex-row">
           {/* Left: title + primary action */}
           <div className="flex flex-col p-6 sm:w-60 sm:shrink-0">
-            <h3 className="text-lg font-semibold text-slate-900">Create application</h3>
-            <p className="mt-1 text-sm text-slate-500">Enter a name for your application and configure the necessary settings.</p>
+            <h3 className="text-lg font-semibold text-foreground">Create application</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Enter a name for your application and configure the necessary settings.</p>
             <div className="mt-6 sm:mt-auto">
               <Button onClick={create} disabled={busy || !name.trim()}>
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />} Create application
@@ -92,7 +92,7 @@ function CreateApplicationModal({ onClose, onCreated }: { onClose: () => void; o
             </div>
           </div>
 
-          <div className="hidden w-px bg-slate-100 sm:block" />
+          <div className="hidden w-px bg-secondary sm:block" />
 
           {/* Right: avatar + fields */}
           <div className="flex-1 space-y-5 p-6">
@@ -100,23 +100,23 @@ function CreateApplicationModal({ onClose, onCreated }: { onClose: () => void; o
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
 
             <div>
-              <label className="text-sm font-medium text-slate-700">Application name</label>
+              <label className="text-sm font-medium text-foreground">Application name</label>
               <input
                 autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your app name"
                 onKeyDown={(e) => e.key === "Enter" && create()}
-                className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none placeholder:text-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1.5 w-full rounded-lg border border-border px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700">Application description</label>
+              <label className="text-sm font-medium text-foreground">Application description</label>
               <textarea
                 value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="Enter your app description"
-                className="mt-1.5 w-full resize-y rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none placeholder:text-slate-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                className="mt-1.5 w-full resize-y rounded-lg border border-border px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/30"
               />
             </div>
 
-            {error && <p className="text-xs text-red-600">{error}</p>}
+            {error && <p className="text-xs text-red-400">{error}</p>}
           </div>
         </div>
       </motion.div>
@@ -180,9 +180,9 @@ function AppGeneral({ app }: { app: App }) {
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-slate-900">General</h2>
+        <h2 className="text-base font-semibold text-foreground">General</h2>
         {app.is_default && (
-          <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-600">Default app</span>
+          <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">Default app</span>
         )}
       </div>
 
@@ -191,7 +191,7 @@ function AppGeneral({ app }: { app: App }) {
         <LogoEditor logo={logo} onUpload={() => fileRef.current?.click()} onDelete={() => setLogo(null)} size="lg" hint="Max file size: 2 MB" />
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFile} />
 
-        <label className="flex items-center gap-2.5 text-sm font-medium text-slate-700">
+        <label className="flex items-center gap-2.5 text-sm font-medium text-foreground">
           Set app as default
           <Toggle on={app.is_default} onChange={makeDefault} disabled={app.is_default} />
         </label>
@@ -199,15 +199,15 @@ function AppGeneral({ app }: { app: App }) {
 
       {/* Application name */}
       <div className="mt-6">
-        <label className="text-sm font-medium text-slate-700">Application name</label>
-        <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 focus-within:border-indigo-400">
+        <label className="text-sm font-medium text-foreground">Application name</label>
+        <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-border px-3 py-2 focus-within:border-primary">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="min-w-0 flex-1 text-sm text-slate-800 outline-none"
+            className="min-w-0 flex-1 text-sm text-foreground outline-none"
           />
           {name && (
-            <button onClick={() => setName("")} className="shrink-0 text-slate-300 hover:text-slate-500" title="Clear">
+            <button onClick={() => setName("")} className="shrink-0 text-muted-foreground hover:text-foreground" title="Clear">
               <X className="h-4 w-4" />
             </button>
           )}
@@ -216,13 +216,13 @@ function AppGeneral({ app }: { app: App }) {
 
       {/* Description */}
       <div className="mt-5">
-        <label className="text-sm font-medium text-slate-700">Description</label>
+        <label className="text-sm font-medium text-foreground">Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           placeholder="This is a description of the application"
-          className="mt-1.5 w-full resize-y rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 outline-none placeholder:text-slate-300 focus:border-indigo-400"
+          className="mt-1.5 w-full resize-y rounded-lg border border-border px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
         />
       </div>
 
@@ -232,12 +232,12 @@ function AppGeneral({ app }: { app: App }) {
           <ReadonlyField value={app.app_id} />
         </Field>
         <Field label="API Key">
-          <ApiKeyField prefix={app.api_key_prefix} rawKey={rawKey} />
+          <ApiKeyField prefix={app.api_key_prefix} fullKey={app.api_key} rawKey={rawKey} />
         </Field>
       </div>
 
       {rawKey && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-xs text-amber-700">
+        <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-500/15 p-3 text-xs text-amber-300">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           This is your new API key. Copy it now — it is shown only once and cannot be retrieved later.
         </div>
@@ -247,27 +247,27 @@ function AppGeneral({ app }: { app: App }) {
         <button
           onClick={rotate}
           disabled={rotating}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary disabled:opacity-50"
         >
           <RefreshCw className={`h-4 w-4 ${rotating ? "animate-spin" : ""}`} /> Rotate API Key
         </button>
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
 
       {/* Footer actions */}
-      <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+      <div className="mt-6 flex items-center justify-between border-t border-border pt-5">
         <button
           onClick={() => setConfirmDelete(true)}
           disabled={!canDelete}
           title={app.is_default ? "The default app cannot be deleted" : undefined}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:text-slate-300"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 disabled:cursor-not-allowed disabled:text-muted-foreground"
         >
           <Trash2 className="h-4 w-4" /> Delete app
         </button>
 
         <div className="flex items-center gap-3">
-          {savedAt && <span className="text-xs font-medium text-emerald-600">Saved</span>}
+          {savedAt && <span className="text-xs font-medium text-emerald-400">Saved</span>}
           <Button onClick={save} disabled={!dirty || saving}>
             {saving && <Loader2 className="h-4 w-4 animate-spin" />} Save changes
           </Button>
@@ -301,15 +301,15 @@ function DeleteAppModal({ app, onClose, onDeleted }: { app: App; onClose: () => 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <motion.div variants={overlay} initial="hidden" animate="show" className="absolute inset-0 bg-slate-900/40" onClick={onClose} />
-      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
-        <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-red-50">
-          <Trash2 className="h-5 w-5 text-red-600" />
+      <motion.div variants={dialog} initial="hidden" animate="show" className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-xl">
+        <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-red-500/15">
+          <Trash2 className="h-5 w-5 text-red-400" />
         </div>
-        <h3 className="mt-4 text-center text-base font-semibold text-slate-900">Delete “{app.name}”?</h3>
-        <p className="mt-1 text-center text-sm text-slate-500">
+        <h3 className="mt-4 text-center text-base font-semibold text-foreground">Delete “{app.name}”?</h3>
+        <p className="mt-1 text-center text-sm text-muted-foreground">
           This permanently deletes the app, its API key, workflows and verification history. This cannot be undone.
         </p>
-        {error && <p className="mt-3 text-center text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-center text-sm text-red-400">{error}</p>}
         <div className="mt-5 flex items-center gap-2">
           <Button variant="ghost" className="flex-1" onClick={onClose} disabled={busy}>Cancel</Button>
           <Button variant="danger" className="flex-1" onClick={remove} disabled={busy}>
@@ -328,15 +328,15 @@ function LogoEditor({
   const icon = size === "lg" ? "h-6 w-6" : "h-5 w-5";
   return (
     <div className="flex items-center gap-4">
-      <span className={`grid ${box} shrink-0 place-items-center overflow-hidden rounded-full border border-slate-200 bg-slate-50 text-slate-400`}>
+      <span className={`grid ${box} shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-secondary text-muted-foreground`}>
         {logo ? <img src={logo} alt="" className="h-full w-full object-cover" /> : <ImageUp className={icon} />}
       </span>
       <div>
         <div className="flex items-center gap-2">
-          <button onClick={onDelete} disabled={!logo} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-300">Delete</button>
-          <button onClick={onUpload} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-600 hover:bg-slate-50">Upload</button>
+          <button onClick={onDelete} disabled={!logo} className="rounded-lg border border-red-500/40 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red-400 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:border-border disabled:text-muted-foreground">Delete</button>
+          <button onClick={onUpload} className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:bg-secondary">Upload</button>
         </div>
-        {hint && <p className="mt-1.5 text-xs text-slate-400">{hint}</p>}
+        {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
       </div>
     </div>
   );
@@ -345,7 +345,7 @@ function LogoEditor({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-1.5 text-sm font-medium text-slate-700">{label}</div>
+      <div className="mb-1.5 text-sm font-medium text-foreground">{label}</div>
       {children}
     </div>
   );
@@ -359,44 +359,44 @@ function ReadonlyField({ value }: { value: string }) {
     setTimeout(() => setCopied(false), 1500);
   };
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5">
-      <code className="min-w-0 flex-1 truncate font-mono text-[13px] text-slate-500">{value}</code>
-      <button onClick={copy} className="shrink-0 text-slate-400 hover:text-indigo-600" title="Copy App ID">
+    <div className="flex items-center gap-2 rounded-lg bg-secondary px-3 py-2.5">
+      <code className="min-w-0 flex-1 truncate font-mono text-[13px] text-muted-foreground">{value}</code>
+      <button onClick={copy} className="shrink-0 text-muted-foreground hover:text-primary" title="Copy App ID">
         {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
       </button>
     </div>
   );
 }
 
-function ApiKeyField({ prefix, rawKey }: { prefix: string; rawKey: string | null }) {
+function ApiKeyField({ prefix, fullKey, rawKey }: { prefix: string; fullKey: string | null; rawKey: string | null }) {
   const [show, setShow] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Only a freshly rotated/created key is available in full; otherwise the secret
-  // is stored hashed and can never be shown again (only its prefix is known).
-  const display = show
-    ? rawKey ?? `${prefix}${"•".repeat(24)}`
-    : "•".repeat(40);
+  // The full key is stored (encrypted) and revealable anytime. `rawKey` is a
+  // just-rotated key; `fullKey` is the persisted one. Legacy keys created before
+  // storage have neither — only the prefix is known until the next rotation.
+  const secret = rawKey ?? fullKey;
+  const display = show ? (secret ?? `${prefix}${"•".repeat(24)}`) : "•".repeat(40);
 
   const copy = () => {
-    navigator.clipboard.writeText(rawKey ?? prefix);
+    navigator.clipboard.writeText(secret ?? prefix);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   return (
     <div>
-      <div className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5">
-        <code className="min-w-0 flex-1 truncate font-mono text-[13px] tracking-tight text-slate-500">{display}</code>
-        <button onClick={() => setShow((v) => !v)} className="shrink-0 text-slate-400 hover:text-indigo-600" title={show ? "Hide" : "Reveal"}>
+      <div className="flex items-center gap-2 rounded-lg bg-secondary px-3 py-2.5">
+        <code className="min-w-0 flex-1 truncate font-mono text-[13px] tracking-tight text-muted-foreground">{display}</code>
+        <button onClick={() => setShow((v) => !v)} className="shrink-0 text-muted-foreground hover:text-primary" title={show ? "Hide" : "Reveal"}>
           {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
-        <button onClick={copy} className="shrink-0 text-slate-400 hover:text-indigo-600" title="Copy API key">
+        <button onClick={copy} className="shrink-0 text-muted-foreground hover:text-primary" title="Copy API key">
           {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
         </button>
       </div>
-      {show && !rawKey && (
-        <p className="mt-1 text-[11px] text-slate-400">For security the full key is hidden. Rotate to generate a new one.</p>
+      {show && !secret && (
+        <p className="mt-1 text-[11px] text-muted-foreground">This key predates key storage — rotate to generate one you can reveal.</p>
       )}
     </div>
   );
@@ -410,9 +410,9 @@ function Toggle({ on, onChange, disabled }: { on: boolean; onChange: () => void;
       aria-checked={on}
       disabled={disabled}
       onClick={onChange}
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-60 ${on ? "bg-indigo-600" : "bg-slate-200"}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-60 ${on ? "bg-primary" : "bg-secondary"}`}
     >
-      <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${on ? "translate-x-[22px]" : "translate-x-0.5"}`} />
+      <span className={`inline-block h-5 w-5 transform rounded-full bg-card shadow transition-transform ${on ? "translate-x-[22px]" : "translate-x-0.5"}`} />
     </button>
   );
 }

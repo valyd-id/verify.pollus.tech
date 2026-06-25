@@ -7,6 +7,7 @@ import { AuthGate } from "./dashboard/pages/AuthGate";
 import { Overview } from "./dashboard/pages/Overview";
 import { Apps } from "./dashboard/pages/Apps";
 import { Workflows } from "./dashboard/pages/Workflows";
+import { WorkflowNew } from "./dashboard/pages/WorkflowNew";
 import { Webhooks } from "./dashboard/pages/Webhooks";
 import { Verifications } from "./dashboard/pages/Verifications";
 import { Settings } from "./dashboard/pages/Settings";
@@ -15,7 +16,7 @@ import { Billing } from "./dashboard/pages/Billing";
 /**
  * Surfaces sharing this SPA:
  *  - /verify?session=<token>  → end-user hosted verification flow
- *  - /login                   → "Login with Valyd" (OIDC redirect target / autologin)
+ *  - /login                   → developer console login ("Login with Valyd" OIDC)
  *  - /dashboard/*             → developer console (gated by RequireAuth → /login)
  */
 function VerifyRoute() {
@@ -30,8 +31,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, ready } = useAuth();
   if (!ready) {
     return (
-      <div className="grid h-screen place-items-center bg-[#f7f8fa]">
-        <Loader2 className="h-5 w-5 animate-spin text-indigo-600" />
+      <div className="grid h-screen place-items-center bg-background">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
       </div>
     );
   }
@@ -58,6 +59,7 @@ export function App() {
             <Route index element={<Overview />} />
             <Route path="verifications" element={<Verifications />} />
             <Route path="workflows" element={<Workflows />} />
+            <Route path="workflows/new" element={<WorkflowNew />} />
             <Route path="webhooks" element={<Webhooks />} />
             <Route path="apps" element={<Apps />} />
             <Route path="billing" element={<Billing />} />

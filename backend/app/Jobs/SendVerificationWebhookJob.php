@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\VerificationSession;
+use App\Models\WebhookEndpoint;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,7 +26,7 @@ class SendVerificationWebhookJob implements ShouldQueue
 
     public array $backoff = [5, 30, 120, 600, 1800];
 
-    public function __construct(public string $sessionId)
+    public function __construct(public string $sessionId, public ?int $endpointId = null)
     {
     }
 
@@ -36,21 +37,30 @@ class SendVerificationWebhookJob implements ShouldQueue
             Log::warning('SendVerificationWebhookJob session not found', ['session_id' => $this->sessionId]);
             return;
         }
-        if (empty($session->callback_url)) {
-            Log::info('SendVerificationWebhookJob no callback_url, skipping', ['session_id' => $this->sessionId]);
-            return;
+
+        $type = 'verification.' . strtolower($session->status);
+
+        // Target: a specific configured endpoint, or the legacy per-session callback.
+        if ($this->endpointId !== null) {
+            $endpoint = WebhookEndpoint::find($this->endpointId);
+            if (!$endpoint || !$endpoint->is_active || !$endpoint->wantsEvent($type)) {
+                return;
+            }
+            $callbackUrl = $endpoint->url;
+            $secret = $endpoint->signing_secret;
+        } else {
+            $callbackUrl = $session->callback_url;
+            $secret = $session->project?->webhook_signing_secret;
         }
 
-        $secret = $session->project?->webhook_signing_secret;
-        if (empty($secret)) {
-            Log::warning('SendVerificationWebhookJob no signing secret on project', ['session_id' => $this->sessionId]);
+        if (empty($callbackUrl) || empty($secret)) {
             return;
         }
 
         $eventId = (string) Str::uuid();
         $payload = [
             'event_id' => $eventId,
-            'type' => 'verification.' . strtolower($session->status),
+            'type' => $type,
             'session_id' => $session->id,
             'status' => $session->status,
             'vendor_data' => $session->vendor_data,
@@ -67,7 +77,7 @@ class SendVerificationWebhookJob implements ShouldQueue
             'X-Valyd-Timestamp' => $timestamp,
             'X-Valyd-Event-Id' => $eventId,
             'X-Valyd-Signature' => $signature,
-        ])->withBody($rawBody, 'application/json')->timeout(30)->post($session->callback_url);
+        ])->withBody($rawBody, 'application/json')->timeout(30)->post($callbackUrl);
 
         if ($response->successful()) {
             Log::info('SendVerificationWebhookJob delivered', ['session_id' => $session->id, 'status' => $response->status()]);

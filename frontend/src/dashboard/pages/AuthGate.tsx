@@ -52,17 +52,17 @@ export function AuthGate() {
 
   return (
     <div className="grid min-h-screen place-items-center p-4" style={{ background: "var(--gradient-hero)" }}>
-      <motion.div variants={dialog} initial="hidden" animate="show" className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+      <motion.div variants={dialog} initial="hidden" animate="show" className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
         {error ? (
           <>
             <AlertTriangle className="mx-auto h-8 w-8 text-amber-500" />
-            <h1 className="mt-3 text-base font-semibold text-slate-900">Can't sign in</h1>
-            <p className="mt-1 text-sm text-slate-500">{error}</p>
+            <h1 className="mt-3 text-base font-semibold text-foreground">Can't sign in</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{error}</p>
           </>
         ) : (
           <>
-            <Loader2 className="mx-auto h-8 w-8 animate-spin text-indigo-600" />
-            <p className="mt-3 text-sm text-slate-500">Redirecting to Valyd…</p>
+            <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+            <p className="mt-3 text-sm text-muted-foreground">Redirecting to Valyd…</p>
           </>
         )}
       </motion.div>

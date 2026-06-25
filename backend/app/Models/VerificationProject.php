@@ -15,6 +15,7 @@ class VerificationProject extends Model
         'logo',
         'api_key_hash',
         'api_key_prefix',
+        'api_key',
         'webhook_url',
         'webhook_signing_secret',
         'allowed_features',
@@ -24,6 +25,7 @@ class VerificationProject extends Model
 
     protected $hidden = [
         'api_key_hash',
+        'api_key',
         'webhook_signing_secret',
     ];
 
@@ -33,6 +35,7 @@ class VerificationProject extends Model
             'allowed_features' => 'array',
             'is_active' => 'boolean',
             'is_default' => 'boolean',
+            'api_key' => 'encrypted', // stored encrypted at rest; read via $p->api_key to display
         ];
     }
 
@@ -44,6 +47,11 @@ class VerificationProject extends Model
     public function workflows()
     {
         return $this->hasMany(VerificationWorkflow::class, 'project_id');
+    }
+
+    public function webhookEndpoints()
+    {
+        return $this->hasMany(WebhookEndpoint::class, 'project_id');
     }
 
     public function sessions()
@@ -67,7 +75,8 @@ class VerificationProject extends Model
 
     /**
      * Generate a new project + its raw API key. Returns [VerificationProject, string $rawKey].
-     * The raw key is only available here — only its hash is stored.
+     * The raw key is stored encrypted (api_key) so it can be revealed in the console,
+     * and hashed (api_key_hash) for auth lookups.
      */
     public static function provision(string $name, array $attributes = []): array
     {
@@ -78,6 +87,7 @@ class VerificationProject extends Model
             'app_id' => (string) Str::uuid(),
             'api_key_hash' => static::hashKey($rawKey),
             'api_key_prefix' => substr($rawKey, 0, 6),
+            'api_key' => $rawKey,
             'is_active' => true,
         ], $attributes));
 

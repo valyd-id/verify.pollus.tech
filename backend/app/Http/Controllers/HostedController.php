@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\GlobalHelper;
+use App\Models\CredentialWatch;
 use App\Models\VerificationCheck;
 use App\Models\VerificationDocument;
 use App\Models\VerificationSession;
@@ -11,10 +12,14 @@ use App\Services\Checks\CredentialRunner;
 use App\Services\Checks\FaceMatchRunner;
 use App\Services\Checks\IdVerificationRunner;
 use App\Services\Checks\LivenessRunner;
+use App\Services\Checks\CheckResult;
 use App\Services\Checks\LocationRunner;
 use App\Services\BillingService;
+use App\Services\IdpClient;
+use App\Services\ReusableIdentityService;
 use App\Services\SessionService;
 use App\Support\ImageInput;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -34,6 +39,8 @@ class HostedController extends Controller
         private CredentialRunner $credentialRunner,
         private LocationRunner $locationRunner,
         private BillingService $billing,
+        private IdpClient $idp,
+        private ReusableIdentityService $reusable,
     ) {
     }
 
@@ -72,6 +79,16 @@ class HostedController extends Controller
             'next_step' => $next,
             'expires_at' => $session->expires_at->toIso8601String(),
             'redirect_url' => $session->redirect_url,
+            // Managed Identity by Valyd. The session is bound to a Valyd identity at
+            // creation (the integrator passes the user's token), so `pollus_id` is
+            // already set here — there is no in-popup login step.
+            'reuse' => (bool) ($session->settings['reuse'] ?? false) || (($session->settings['product'] ?? null) === 'sso'),
+            'pollus_id' => $session->pollus_id,
+            // True when we already hold a verified record for this user in this app →
+            // they can re-verify with a selfie only (no second ID scan).
+            'reuse_eligible' => $session->pollus_id
+                ? $this->reusable->findActive($session->project_id, $session->pollus_id) !== null
+                : false,
         ]);
     }
 
@@ -173,6 +190,64 @@ class HostedController extends Controller
         $session = $this->session($request);
         $this->sessions->decline($session);
         return GlobalHelper::apiSuccess(['status' => $session->refresh()->status]);
+    }
+
+    // --- Managed Identity by Valyd (returning-user reuse) -------------------
+
+    /**
+     * Returning-user reuse: match a selfie LOCALLY against the stored face embedding
+     * in verify's own store. On a match we satisfy the workflow's identity features
+     * from the stored record and reflect its verified licenses — no second ID scan.
+     */
+    public function reuseFace(Request $request)
+    {
+        $session = $this->session($request);
+        if (empty($session->pollus_id)) {
+            return GlobalHelper::apiError('not_linked', 'Sign in with Valyd before reusing your identity.', 400);
+        }
+        $rec = $this->reusable->findActive($session->project_id, $session->pollus_id);
+        if (!$rec) {
+            return GlobalHelper::apiError('no_reusable_record', 'No reusable verification found — please verify fully.', 400);
+        }
+        $selfie = $request->input('selfie');
+        if (!is_string($selfie) || $selfie === '') {
+            return GlobalHelper::apiError('invalid_image', 'A selfie is required.', 400);
+        }
+
+        $owner = $session->project?->owner;
+        $match = $this->billing->runCharged($owner, 'face_match', fn () => $this->reusable->matchSelfie($rec, $selfie), $session->id);
+
+        if (!$match['ok']) {
+            return GlobalHelper::apiError('face_match_unavailable', 'Could not match your face right now. Please try again.', 502);
+        }
+        if (!$match['match']) {
+            $session = $this->sessions->recordCheck(
+                $session,
+                CheckResult::failed(VerificationCheck::TYPE_FACE_MATCH, 'Face did not match the stored identity', $match['score']),
+            );
+            return GlobalHelper::apiSuccess(['match' => false, 'session_status' => $session->status]);
+        }
+
+        // Match: trust the stored verified identity for the workflow's identity
+        // features, and reflect its verified licenses for the credential feature.
+        $session->update(['reused' => true]);
+        $rec->update(['verified_at' => Carbon::now()]);
+        $verifiedLicense = collect($rec->licenses ?? [])->first(function ($l) {
+            return ($l['status'] ?? null) === 'verified';
+        });
+
+        foreach ($session->features as $f) {
+            if (in_array($f, [VerificationCheck::TYPE_ID, VerificationCheck::TYPE_LIVENESS, VerificationCheck::TYPE_FACE_MATCH], true)) {
+                $score = $f === VerificationCheck::TYPE_FACE_MATCH ? $match['score'] : null;
+                $session = $this->sessions->recordCheck($session, CheckResult::passed($f, $score, ['source' => 'reuse', 'pollus_id' => $session->pollus_id]));
+            } elseif ($f === VerificationCheck::TYPE_CREDENTIAL) {
+                $session = $verifiedLicense
+                    ? $this->sessions->recordCheck($session, CheckResult::passed(VerificationCheck::TYPE_CREDENTIAL, null, ['source' => 'reuse', 'license' => $verifiedLicense]))
+                    : $this->sessions->recordCheck($session, CheckResult::review(VerificationCheck::TYPE_CREDENTIAL, ['source' => 'reuse', 'reason' => 'no_verified_license']));
+            }
+        }
+
+        return GlobalHelper::apiSuccess(['match' => true, 'score' => $match['score'], 'session_status' => $session->refresh()->status]);
     }
 
     // --- check helpers -------------------------------------------------------
@@ -290,7 +365,72 @@ class HostedController extends Controller
             $input['full_name'] = $name;
         }
 
-        return $this->credentialRunner->run($input);
+        $result = $this->credentialRunner->run($input);
+        $this->maybeWatchCredential($session, $input, $result);
+        return $result;
+    }
+
+    /**
+     * If this workflow re-checks the license on a cadence (scheduled) or near
+     * expiry, register/refresh a credential watch so the background job keeps the
+     * license status fresh. `per_action` workflows are re-run live every time, so
+     * they get no watch.
+     */
+    private function maybeWatchCredential(VerificationSession $session, array $input, CheckResult $result): void
+    {
+        $policy = $session->settings['recheck'] ?? null;
+        if (!in_array($policy, [CredentialWatch::POLICY_SCHEDULED, CredentialWatch::POLICY_EXPIRY], true)) {
+            return;
+        }
+        if ($result->status === VerificationCheck::STATUS_FAILED) {
+            return; // only watch licenses we actually confirmed
+        }
+
+        $interval = $session->settings['recheck_interval'] ?? 'daily';
+        $expireAt = $this->extractLicenseExpiry($result->data);
+        $next = $policy === CredentialWatch::POLICY_SCHEDULED
+            ? Carbon::now()->add($interval === 'weekly' ? '1 week' : '1 day')
+            : ($expireAt ? $expireAt->copy()->subDays(3) : Carbon::now()->addMonth());
+
+        CredentialWatch::updateOrCreate(
+            [
+                'project_id' => $session->project_id,
+                'session_id' => $session->id,
+                'license_number' => $input['license_number'] ?? ($input['license_no'] ?? null),
+                'license_state' => $input['license_state'] ?? ($input['state'] ?? null),
+            ],
+            [
+                'pollus_id' => $session->pollus_id,
+                'credential' => $input,
+                'license_type' => $input['license_type'] ?? ($input['provider_code'] ?? null),
+                'policy' => $policy,
+                'interval' => $interval,
+                'last_status' => $result->status,
+                'expire_at' => $expireAt,
+                'last_checked_at' => Carbon::now(),
+                'next_recheck_at' => $next,
+                'is_active' => true,
+            ],
+        );
+    }
+
+    /** Best-effort: pull a license expiry date out of the credential result data. */
+    private function extractLicenseExpiry(array $data): ?Carbon
+    {
+        $found = null;
+        array_walk_recursive($data, function ($v, $k) use (&$found) {
+            if ($found || !is_string($k) || !is_scalar($v)) {
+                return;
+            }
+            if (stripos((string) $k, 'expir') !== false) {
+                try {
+                    $found = Carbon::parse((string) $v);
+                } catch (\Throwable $e) {
+                    // ignore unparseable
+                }
+            }
+        });
+        return $found;
     }
 
     /** The verified full name from the completed ID-verification (KYC) check, if any. */

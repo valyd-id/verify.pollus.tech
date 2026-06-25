@@ -17,9 +17,9 @@ function reasonLabel(t: BillingTxn): string {
 }
 
 const TXN_UI = {
-  credit: { icon: ArrowUpCircle, color: "text-emerald-600", bg: "bg-emerald-50", sign: "+" },
-  refund: { icon: RotateCcw, color: "text-sky-600", bg: "bg-sky-50", sign: "+" },
-  debit: { icon: ArrowDownCircle, color: "text-slate-500", bg: "bg-slate-100", sign: "−" },
+  credit: { icon: ArrowUpCircle, color: "text-emerald-300", bg: "bg-emerald-500/15", sign: "+" },
+  refund: { icon: RotateCcw, color: "text-sky-300", bg: "bg-sky-500/15", sign: "+" },
+  debit: { icon: ArrowDownCircle, color: "text-muted-foreground", bg: "bg-secondary", sign: "−" },
 } as const;
 
 const QUICK = [10, 25, 50, 100];
@@ -88,20 +88,20 @@ export function Billing() {
 
       {/* Transactions */}
       <div className="mb-3 flex items-center gap-2">
-        <Receipt className="h-4 w-4 text-slate-400" />
-        <h2 className="text-sm font-semibold text-slate-700">Recent transactions</h2>
+        <Receipt className="h-4 w-4 text-muted-foreground" />
+        <h2 className="text-sm font-semibold text-foreground">Recent transactions</h2>
       </div>
       <Card className="overflow-hidden">
         {loadingTxns ? (
-          <div className="grid place-items-center py-14"><Loader2 className="h-6 w-6 animate-spin text-slate-300" /></div>
+          <div className="grid place-items-center py-14"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
         ) : txns.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-            <span className="grid h-12 w-12 place-items-center rounded-xl bg-slate-100 text-slate-400"><Receipt className="h-6 w-6" /></span>
-            <p className="mt-3 text-sm font-medium text-slate-700">No transactions yet</p>
-            <p className="mt-1 text-sm text-slate-500">Top up your balance to get started.</p>
+            <span className="grid h-12 w-12 place-items-center rounded-xl bg-secondary text-muted-foreground"><Receipt className="h-6 w-6" /></span>
+            <p className="mt-3 text-sm font-medium text-foreground">No transactions yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">Top up your balance to get started.</p>
           </div>
         ) : (
-          <motion.ul variants={listContainer} initial="hidden" animate="show" className="divide-y divide-slate-50">
+          <motion.ul variants={listContainer} initial="hidden" animate="show" className="divide-y divide-border">
             {txns.map((t) => {
               const ui = TXN_UI[t.type];
               const Icon = ui.icon;
@@ -111,12 +111,12 @@ export function Billing() {
                     <Icon className="h-[18px] w-[18px]" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium capitalize text-slate-800">{reasonLabel(t)}</div>
-                    <div className="text-xs text-slate-400">{new Date(t.created_at).toLocaleString()}</div>
+                    <div className="truncate text-sm font-medium capitalize text-foreground">{reasonLabel(t)}</div>
+                    <div className="text-xs text-muted-foreground">{new Date(t.created_at).toLocaleString()}</div>
                   </div>
                   <div className="text-right">
                     <div className={`text-sm font-semibold tabular-nums ${ui.color}`}>{ui.sign}{formatMoney(t.amount, currency)}</div>
-                    <div className="text-xs tabular-nums text-slate-400">{formatMoney(t.balance_after, currency)}</div>
+                    <div className="text-xs tabular-nums text-muted-foreground">{formatMoney(t.balance_after, currency)}</div>
                   </div>
                 </motion.li>
               );
@@ -127,9 +127,9 @@ export function Billing() {
 
       {open && (
         <Modal title="Top up balance" onClose={() => setOpen(false)}>
-          <label className="text-sm font-medium text-slate-700">Amount ({currency})</label>
-          <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100">
-            <span className="text-slate-400">{currencySymbol(currency)}</span>
+          <label className="text-sm font-medium text-foreground">Amount ({currency})</label>
+          <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/30">
+            <span className="text-muted-foreground">{currencySymbol(currency)}</span>
             <input
               autoFocus
               type="number"
@@ -137,7 +137,7 @@ export function Billing() {
               step="0.01"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="min-w-0 flex-1 text-sm text-slate-800 outline-none placeholder:text-slate-300"
+              className="min-w-0 flex-1 text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -147,7 +147,7 @@ export function Billing() {
                 type="button"
                 onClick={() => setAmount(String(q))}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                  amount === String(q) ? "border-indigo-400 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-600 hover:border-indigo-400 hover:text-indigo-600"
+                  amount === String(q) ? "border-primary bg-primary-soft text-primary" : "border-border text-muted-foreground hover:border-primary hover:text-primary"
                 }`}
               >
                 {formatMoney(q, currency)}

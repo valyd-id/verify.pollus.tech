@@ -33,6 +33,9 @@ class AppController extends Controller
             'description' => $p->description,
             'logo' => $p->logo,                       // base64 data URL or null
             'api_key_prefix' => $p->api_key_prefix,
+            // Full key so the console can reveal it anytime (null for keys created
+            // before storage was added — rotate to populate).
+            'api_key' => $p->api_key,
             'webhook_url' => $p->webhook_url,
             'is_active' => $p->is_active,
             'is_default' => $p->is_default,
@@ -133,6 +136,7 @@ class AppController extends Controller
         $project->update([
             'api_key_hash' => VerificationProject::hashKey($rawKey),
             'api_key_prefix' => substr($rawKey, 0, 6),
+            'api_key' => $rawKey,
         ]);
 
         return GlobalHelper::apiSuccess(['app' => $this->present($project->refresh()), 'api_key' => $rawKey]);

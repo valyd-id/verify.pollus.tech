@@ -39,6 +39,20 @@ return [
         'scopes' => env('VALYD_OIDC_SCOPES', 'openid profile email'),
     ],
 
+    // IdP (idp.pollus.tech) integration for "verify once, reuse": end-user logs in
+    // with Valyd (TPSSO) so we get a pollus_id, then we read/write their verified
+    // data backend-to-backend. TPSSO endpoints use client_id/client_secret + the
+    // user's access token; the internal endpoints use the shared X-Internal-Auth key.
+    'idp' => [
+        'base_url' => env('IDP_BASE_URL', 'https://idp.pollus.tech'),
+        'internal_auth_key' => env('IDP_INTERNAL_AUTH_KEY'),
+        'tpsso_client_id' => env('IDP_TPSSO_CLIENT_ID'),
+        'tpsso_client_secret' => env('IDP_TPSSO_CLIENT_SECRET'),
+        'tpsso_redirect_uri' => env('IDP_TPSSO_REDIRECT_URI', 'https://verify.pollus.tech/verify/valyd-callback'),
+        'tpsso_scopes' => env('IDP_TPSSO_SCOPES', 'profile verifications zkp'),
+        'timeout' => (int) env('IDP_TIMEOUT', 30),
+    ],
+
     // Professional-license verification (machine-to-machine into vc.pollus.tech).
     // Uses the bulk endpoint, which is API-key (Company) authenticated and does
     // not require an existing Valyd user account — correct for anonymous KYC.

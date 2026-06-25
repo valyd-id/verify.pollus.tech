@@ -8,6 +8,7 @@ use App\Models\VerificationSession;
 use App\Models\VerificationWorkflow;
 use App\Services\Checks\CheckResult;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SessionService
@@ -42,6 +43,7 @@ class SessionService
             'features' => $features,
             'settings' => $settings,
             'metadata' => $opts['metadata'] ?? [],
+            'pollus_id' => $opts['pollus_id'] ?? null,
             'expires_at' => Carbon::now()->addSeconds($ttl),
         ]);
     }
@@ -109,6 +111,26 @@ class SessionService
             ],
         ]);
 
+        // Managed Identity by Valyd: first-time approval of a Valyd-linked session →
+        // (1) keep a verify-side copy (face embedding + profile) for selfie-only
+        // re-checks, and (2) write the result back to the IdP (the system of record)
+        // so it joins the user's Valyd identity and is reusable everywhere.
+        $isManaged = ($session->settings['reuse'] ?? false) || (($session->settings['product'] ?? null) === 'sso');
+        if (
+            $status === VerificationSession::STATUS_APPROVED
+            && !empty($session->pollus_id)
+            && $isManaged
+            && !$session->reused
+        ) {
+            try {
+                $fresh = $session->refresh();
+                app(ReusableIdentityService::class)->captureFromSession($fresh);
+                app(IdpClient::class)->writeBackSession($fresh);
+            } catch (\Throwable $e) {
+                Log::error('Managed identity capture/write-back failed: ' . $e->getMessage());
+            }
+        }
+
         $this->dispatchWebhook($session->refresh());
         return $session;
     }
@@ -134,10 +156,25 @@ class SessionService
 
     public function dispatchWebhook(VerificationSession $session): void
     {
-        if (empty($session->callback_url)) {
+        $queue = config('verify.webhook_queue', 'default');
+
+        // Legacy: per-session callback override / project's single webhook URL.
+        if (!empty($session->callback_url)) {
+            SendVerificationWebhookJob::dispatch($session->id)->onQueue($queue);
+        }
+
+        // Fan out to every active configured endpoint (each signed with its own
+        // secret) — hosted sessions only; standalone callers already get the result
+        // synchronously in the API response.
+        if ($session->mode !== VerificationSession::MODE_HOSTED) {
             return;
         }
-        SendVerificationWebhookJob::dispatch($session->id)
-            ->onQueue(config('verify.webhook_queue', 'default'));
+        $session->loadMissing('project');
+        $endpoints = $session->project
+            ? $session->project->webhookEndpoints()->where('is_active', true)->get()
+            : collect();
+        foreach ($endpoints as $endpoint) {
+            SendVerificationWebhookJob::dispatch($session->id, $endpoint->id)->onQueue($queue);
+        }
     }
 }

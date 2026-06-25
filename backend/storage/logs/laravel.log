@@ -19074,3 +19074,906 @@
 #38 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('...')
 #39 {main}
 "} 
+[2026-06-20 10:15:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa327d9-e93b-48f8-9ed4-29ab7cf0ceed","http_status":405,"attempt":1} 
+[2026-06-20 10:15:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"d807a415-8581-41b2-b5e3-c641033b9d52","http_status":405,"attempt":1} 
+[2026-06-20 10:15:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e4510e88-0085-48ac-9641-790248519144","http_status":405,"attempt":1} 
+[2026-06-20 10:15:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa327d9-e93b-48f8-9ed4-29ab7cf0ceed","http_status":405,"attempt":2} 
+[2026-06-20 10:15:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"d807a415-8581-41b2-b5e3-c641033b9d52","http_status":405,"attempt":2} 
+[2026-06-20 10:15:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e4510e88-0085-48ac-9641-790248519144","http_status":405,"attempt":2} 
+[2026-06-20 10:15:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa327d9-e93b-48f8-9ed4-29ab7cf0ceed","http_status":405,"attempt":3} 
+[2026-06-20 10:15:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"d807a415-8581-41b2-b5e3-c641033b9d52","http_status":405,"attempt":3} 
+[2026-06-20 10:15:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e4510e88-0085-48ac-9641-790248519144","http_status":405,"attempt":3} 
+[2026-06-22 10:19:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"262904ba-a56f-4410-af22-4462c1e00a7f","http_status":405,"attempt":1} 
+[2026-06-22 10:19:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"262904ba-a56f-4410-af22-4462c1e00a7f","http_status":405,"attempt":1} 
+[2026-06-22 10:19:55] production.ERROR: Insufficient balance. Top up your account to continue. {"exception":"[object] (App\\Exceptions\\InsufficientBalanceException(code: 0): Insufficient balance. Top up your account to continue. at /var/www/pollus_main_servers/verify.pollus.tech/backend/app/Services/BillingService.php:69)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/app/Http/Controllers/SessionController.php(53): App\\Services\\BillingService->assertCanAfford()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(47): App\\Http\\Controllers\\SessionController->store()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php(266): Illuminate\\Routing\\ControllerDispatcher->dispatch()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php(212): Illuminate\\Routing\\Route->runController()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php(808): Illuminate\\Routing\\Route->run()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Routing\\Router->{closure:Illuminate\\Routing\\Router::runRouteWithinStack():807}()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/app/Http/Middleware/AuthenticateProject.php(35): Illuminate\\Pipeline\\Pipeline->{closure:Illuminate\\Pipeline\\Pipeline::prepareDestination():168}()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): App\\Http\\Middleware\\AuthenticateProject->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php(750): Illuminate\\Routing\\Router->runRoute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(201): Illuminate\\Routing\\Router->dispatch()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->{closure:Illuminate\\Foundation\\Http\\Kernel::dispatchToRouter():198}()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->{closure:Illuminate\\Pipeline\\Pipeline::prepareDestination():168}()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#21 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle()
+#22 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle()
+#23 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#24 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle()
+#25 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#26 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle()
+#27 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#28 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle()
+#29 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#30 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle()
+#31 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#32 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle()
+#33 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():184}:185}()
+#34 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then()
+#35 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter()
+#36 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate\\Foundation\\Http\\Kernel->handle()
+#37 /var/www/pollus_main_servers/verify.pollus.tech/backend/public/index.php(17): Illuminate\\Foundation\\Application->handleRequest()
+#38 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('...')
+#39 {main}
+"} 
+[2026-06-22 10:20:00] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"262904ba-a56f-4410-af22-4462c1e00a7f","http_status":405,"attempt":2} 
+[2026-06-22 10:20:01] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"262904ba-a56f-4410-af22-4462c1e00a7f","http_status":405,"attempt":2} 
+[2026-06-22 11:41:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":1} 
+[2026-06-22 11:41:44] production.INFO: SendVerificationWebhookJob delivered {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","status":200} 
+[2026-06-22 11:41:49] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":2} 
+[2026-06-22 11:42:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":3} 
+[2026-06-22 11:44:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":4} 
+[2026-06-22 11:54:20] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":5} 
+[2026-06-22 12:05:02] production.INFO: SendVerificationWebhookJob delivered {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","status":200} 
+[2026-06-22 12:05:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":1} 
+[2026-06-22 12:05:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":2} 
+[2026-06-22 12:05:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":3} 
+[2026-06-22 12:07:03] production.INFO: SendVerificationWebhookJob delivered {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","status":200} 
+[2026-06-22 12:07:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":1} 
+[2026-06-22 12:07:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":1} 
+[2026-06-22 12:07:03] production.INFO: SendVerificationWebhookJob delivered {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","status":200} 
+[2026-06-22 12:07:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":2} 
+[2026-06-22 12:07:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":2} 
+[2026-06-22 12:07:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":4} 
+[2026-06-22 12:07:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":3} 
+[2026-06-22 12:07:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":3} 
+[2026-06-22 12:09:00] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":1} 
+[2026-06-22 12:09:01] production.INFO: SendVerificationWebhookJob delivered {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","status":200} 
+[2026-06-22 12:09:06] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":2} 
+[2026-06-22 12:09:36] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":3} 
+[2026-06-22 12:09:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":4} 
+[2026-06-22 12:09:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":4} 
+[2026-06-22 12:11:37] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":4} 
+[2026-06-22 12:13:01] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":1} 
+[2026-06-22 12:13:01] production.INFO: SendVerificationWebhookJob delivered {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","status":200} 
+[2026-06-22 12:13:07] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":2} 
+[2026-06-22 12:13:37] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":3} 
+[2026-06-22 12:15:37] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":4} 
+[2026-06-22 12:17:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":5} 
+[2026-06-22 12:19:41] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":5} 
+[2026-06-22 12:19:41] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":5} 
+[2026-06-22 12:21:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":5} 
+[2026-06-22 12:24:20] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":6} 
+[2026-06-22 12:25:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":5} 
+[2026-06-22 12:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":6} 
+[2026-06-22 12:49:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":6} 
+[2026-06-22 12:49:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":6} 
+[2026-06-22 12:51:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":6} 
+[2026-06-22 12:54:20] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":7} 
+[2026-06-22 12:55:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":6} 
+[2026-06-22 13:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":7} 
+[2026-06-22 13:19:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":7} 
+[2026-06-22 13:19:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":7} 
+[2026-06-22 13:21:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":7} 
+[2026-06-22 13:24:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":8} 
+[2026-06-22 13:25:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":7} 
+[2026-06-22 13:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":8} 
+[2026-06-22 13:49:45] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":8} 
+[2026-06-22 13:49:45] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":8} 
+[2026-06-22 13:51:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":8} 
+[2026-06-22 13:54:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":9} 
+[2026-06-22 13:55:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":8} 
+[2026-06-22 14:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":9} 
+[2026-06-22 14:19:45] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":9} 
+[2026-06-22 14:19:45] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":9} 
+[2026-06-22 14:21:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":9} 
+[2026-06-22 14:24:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":10} 
+[2026-06-22 14:25:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":9} 
+[2026-06-22 14:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"350f9437-1c8f-4c1e-aa3e-948a08e4f614","http_status":404,"attempt":10} 
+[2026-06-22 14:49:47] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2cec529a-96f8-490a-b7e8-94245eff36cf","http_status":404,"attempt":10} 
+[2026-06-22 14:49:47] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ba2d0218-31e4-4d0f-b92d-8c88bf797a10","http_status":404,"attempt":10} 
+[2026-06-22 14:51:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"7a03f69e-18d6-4680-91ee-ba8ea613f814","http_status":404,"attempt":10} 
+[2026-06-22 14:54:24] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-22 14:55:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"c104da03-2927-4541-80f5-e35f306f14ef","http_status":404,"attempt":10} 
+[2026-06-22 15:17:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-22 15:19:47] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-22 15:19:47] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-22 15:21:44] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-22 15:25:44] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 11:10:16] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":1} 
+[2026-06-24 11:10:16] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":1} 
+[2026-06-24 11:10:23] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":2} 
+[2026-06-24 11:10:23] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":2} 
+[2026-06-24 11:10:53] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":3} 
+[2026-06-24 11:10:53] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":3} 
+[2026-06-24 11:12:47] production.INFO: SendVerificationWebhookJob delivered {"session_id":"3dcae29b-fb0c-43dc-b7e1-0db8d066f6cd","status":200} 
+[2026-06-24 11:12:53] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":4} 
+[2026-06-24 11:12:53] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":4} 
+[2026-06-24 11:22:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":5} 
+[2026-06-24 11:22:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":5} 
+[2026-06-24 11:30:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":1} 
+[2026-06-24 11:30:43] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":1} 
+[2026-06-24 11:30:48] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":2} 
+[2026-06-24 11:30:48] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":2} 
+[2026-06-24 11:31:18] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":3} 
+[2026-06-24 11:31:18] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":3} 
+[2026-06-24 11:33:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":4} 
+[2026-06-24 11:33:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":4} 
+[2026-06-24 11:43:20] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":5} 
+[2026-06-24 11:43:20] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":5} 
+[2026-06-24 11:52:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":6} 
+[2026-06-24 11:52:54] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":6} 
+[2026-06-24 12:13:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":6} 
+[2026-06-24 12:13:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":6} 
+[2026-06-24 12:15:13] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":1} 
+[2026-06-24 12:15:13] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":1} 
+[2026-06-24 12:15:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":2} 
+[2026-06-24 12:15:19] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":2} 
+[2026-06-24 12:15:49] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":3} 
+[2026-06-24 12:15:49] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":3} 
+[2026-06-24 12:17:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":4} 
+[2026-06-24 12:17:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":4} 
+[2026-06-24 12:22:56] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":7} 
+[2026-06-24 12:22:56] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":7} 
+[2026-06-24 12:27:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":5} 
+[2026-06-24 12:27:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":5} 
+[2026-06-24 12:43:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":7} 
+[2026-06-24 12:43:22] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":7} 
+[2026-06-24 12:52:56] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":8} 
+[2026-06-24 12:52:56] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":8} 
+[2026-06-24 12:57:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":6} 
+[2026-06-24 12:57:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":6} 
+[2026-06-24 13:03:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":1} 
+[2026-06-24 13:03:03] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":1} 
+[2026-06-24 13:03:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":2} 
+[2026-06-24 13:03:09] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":2} 
+[2026-06-24 13:03:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":3} 
+[2026-06-24 13:03:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":3} 
+[2026-06-24 13:05:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":4} 
+[2026-06-24 13:05:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":4} 
+[2026-06-24 13:13:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":8} 
+[2026-06-24 13:13:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":8} 
+[2026-06-24 13:15:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":5} 
+[2026-06-24 13:15:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":5} 
+[2026-06-24 13:22:58] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":9} 
+[2026-06-24 13:22:58] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":9} 
+[2026-06-24 13:27:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":7} 
+[2026-06-24 13:27:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":7} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":1} 
+[2026-06-24 13:35:02] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":1} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":2} 
+[2026-06-24 13:35:08] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":2} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":3} 
+[2026-06-24 13:35:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":3} 
+[2026-06-24 13:37:38] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":4} 
+[2026-06-24 13:37:39] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":4} 
+[2026-06-24 13:43:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":9} 
+[2026-06-24 13:43:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":9} 
+[2026-06-24 13:45:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":6} 
+[2026-06-24 13:45:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":6} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":5} 
+[2026-06-24 13:47:40] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":5} 
+[2026-06-24 13:52:58] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":10} 
+[2026-06-24 13:52:58] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"9aa4cd9f-5fff-4d0b-b1be-c807ba5f42b9","http_status":404,"attempt":10} 
+[2026-06-24 13:57:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":8} 
+[2026-06-24 13:57:50] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":8} 
+[2026-06-24 14:13:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":10} 
+[2026-06-24 14:13:24] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"ec43bdad-2078-4151-afb5-1f820c6021f7","http_status":404,"attempt":10} 
+[2026-06-24 14:15:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":7} 
+[2026-06-24 14:15:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":7} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":6} 
+[2026-06-24 14:17:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":6} 
+[2026-06-24 14:22:58] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 14:22:58] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 14:27:52] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":9} 
+[2026-06-24 14:27:52] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":9} 
+[2026-06-24 14:43:26] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 14:43:26] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 14:45:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":8} 
+[2026-06-24 14:45:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":8} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":7} 
+[2026-06-24 14:47:42] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":7} 
+[2026-06-24 14:57:52] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":10} 
+[2026-06-24 14:57:52] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"db26fa66-28dc-4a26-8b7b-05bfe9cd509f","http_status":404,"attempt":10} 
+[2026-06-24 15:15:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":9} 
+[2026-06-24 15:15:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":9} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":8} 
+[2026-06-24 15:17:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":8} 
+[2026-06-24 15:27:54] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 15:27:54] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 15:45:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":10} 
+[2026-06-24 15:45:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"4befbfbd-4db2-49e3-8eb6-4f0a732ab2f8","http_status":404,"attempt":10} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":9} 
+[2026-06-24 15:47:44] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":9} 
+[2026-06-24 16:15:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:15:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"2c620c70-3197-4f61-b4a6-b38d7aff3dfd","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"e95df3b8-01a8-48de-a404-eef1385098c3","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"973ab58a-c523-45ef-97ef-9a82d6d00364","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"11f1ff90-d241-4dd7-acc6-9493947df052","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":10} 
+[2026-06-24 16:17:46] production.WARNING: SendVerificationWebhookJob failed, will retry {"session_id":"34ec51ce-7882-4526-9f50-de1d02a9cdd9","http_status":404,"attempt":10} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 
+[2026-06-24 16:47:46] production.ERROR: App\Jobs\SendVerificationWebhookJob has been attempted too many times. {"exception":"[object] (Illuminate\\Queue\\MaxAttemptsExceededException(code: 0): App\\Jobs\\SendVerificationWebhookJob has been attempted too many times. at /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/MaxAttemptsExceededException.php:24)
+[stacktrace]
+#0 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(794): Illuminate\\Queue\\MaxAttemptsExceededException::forJob()
+#1 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(528): Illuminate\\Queue\\Worker->maxAttemptsExceededException()
+#2 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(431): Illuminate\\Queue\\Worker->markJobAsFailedIfAlreadyExceedsMaxAttempts()
+#3 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(392): Illuminate\\Queue\\Worker->process()
+#4 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(178): Illuminate\\Queue\\Worker->runJob()
+#5 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(149): Illuminate\\Queue\\Worker->daemon()
+#6 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(132): Illuminate\\Queue\\Console\\WorkCommand->runWorker()
+#7 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()
+#8 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#9 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate\\Container\\Util::unwrapIfClosure()
+#10 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#11 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate\\Container\\BoundMethod::call()
+#12 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate\\Container\\Container->call()
+#13 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Command/Command.php(341): Illuminate\\Console\\Command->execute()
+#14 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony\\Component\\Console\\Command\\Command->run()
+#15 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(1102): Illuminate\\Console\\Command->run()
+#16 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand()
+#17 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/symfony/console/Application.php(195): Symfony\\Component\\Console\\Application->doRun()
+#18 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony\\Component\\Console\\Application->run()
+#19 /var/www/pollus_main_servers/verify.pollus.tech/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 /var/www/pollus_main_servers/verify.pollus.tech/backend/artisan(13): Illuminate\\Foundation\\Application->handleCommand()
+#21 {main}
+"} 

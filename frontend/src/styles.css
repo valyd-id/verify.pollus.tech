@@ -4,6 +4,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
+  --color-card-2: var(--card-2);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
@@ -11,29 +12,33 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-border-2: var(--border-2);
   --color-ring: var(--ring);
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* New dark / teal design system (ported from the setup-wizard design). */
 :root {
-  --background: oklch(0.995 0.002 90);
-  --foreground: oklch(0.18 0.02 260);
-  --card: oklch(1 0 0);
-  --primary: oklch(0.28 0.12 265);
-  --primary-foreground: oklch(0.99 0 0);
-  --primary-soft: oklch(0.96 0.03 250);
-  --secondary: oklch(0.97 0.01 250);
-  --muted: oklch(0.965 0.008 250);
-  --muted-foreground: oklch(0.5 0.02 260);
-  --border: oklch(0.92 0.008 250);
-  --ring: oklch(0.72 0.16 235);
+  --background: #0e1318;
+  --foreground: #e8eef3;
+  --card: #141b22;
+  --card-2: #1b232c;
+  --primary: #2bd4c0;
+  --primary-foreground: #06231f;
+  --primary-soft: rgba(43, 212, 192, 0.12);
+  --secondary: #1b232c;
+  --muted: #1b232c;
+  --muted-foreground: #93a1ae;
+  --border: #28323d;
+  --border-2: #37444f;
+  --ring: #2bd4c0;
 
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.88 0.10 235 / 0.55), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 80% 20%, oklch(0.85 0.12 220 / 0.35), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 10% 30%, oklch(0.9 0.08 265 / 0.35), transparent 70%);
-  --shadow-soft: 0 1px 2px oklch(0.2 0.02 260 / 0.04), 0 8px 24px -8px oklch(0.2 0.02 260 / 0.08);
-  --shadow-lift: 0 2px 4px oklch(0.2 0.02 260 / 0.04), 0 24px 48px -16px oklch(0.2 0.02 260 / 0.18);
+  --gradient-hero: radial-gradient(900px 480px at 88% -8%, rgba(43, 212, 192, 0.1), transparent 60%),
+    radial-gradient(700px 520px at -6% 108%, rgba(43, 212, 192, 0.05), transparent 55%), #0e1318;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 48px -16px rgba(0, 0, 0, 0.6);
 }
 
 @layer base {

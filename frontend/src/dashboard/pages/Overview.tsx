@@ -23,19 +23,19 @@ export function Overview() {
     return (
       <div className="mx-auto max-w-2xl">
         <Card className="p-8 text-center">
-          <h2 className="text-lg font-semibold text-slate-900">Welcome to Valyd Verify</h2>
-          <p className="mt-1 text-sm text-slate-500">Create your first app to get an API key and start verifying.</p>
-          <Link to="/dashboard/apps" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white">Create app <ArrowRight className="h-4 w-4" /></Link>
+          <h2 className="text-lg font-semibold text-foreground">Welcome to Valyd Verify</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Create your first app to get an API key and start verifying.</p>
+          <Link to="/dashboard/apps" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Create app <ArrowRight className="h-4 w-4" /></Link>
         </Card>
       </div>
     );
   }
 
   const cards = [
-    { label: "Total", value: stats?.total ?? 0, icon: Activity, color: "text-slate-600 bg-slate-100" },
-    { label: "Approved", value: stats?.approved ?? 0, icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50" },
-    { label: "Declined", value: stats?.declined ?? 0, icon: XCircle, color: "text-red-600 bg-red-50" },
-    { label: "In review", value: stats?.in_review ?? 0, icon: Clock, color: "text-amber-600 bg-amber-50" },
+    { label: "Total", value: stats?.total ?? 0, icon: Activity, color: "text-muted-foreground bg-secondary" },
+    { label: "Approved", value: stats?.approved ?? 0, icon: CheckCircle2, color: "text-emerald-300 bg-emerald-500/15" },
+    { label: "Declined", value: stats?.declined ?? 0, icon: XCircle, color: "text-red-300 bg-red-500/15" },
+    { label: "In review", value: stats?.in_review ?? 0, icon: Clock, color: "text-amber-300 bg-amber-500/15" },
   ];
 
   return (
@@ -46,25 +46,25 @@ export function Overview() {
           <motion.div key={c.label} variants={listItem}>
             <Card className="p-4">
               <span className={`grid h-9 w-9 place-items-center rounded-lg ${c.color}`}><c.icon className="h-4 w-4" /></span>
-              <div className="mt-3 text-2xl font-semibold text-slate-900">{c.value}</div>
-              <div className="text-xs text-slate-500">{c.label}</div>
+              <div className="mt-3 text-2xl font-semibold text-foreground">{c.value}</div>
+              <div className="text-xs text-muted-foreground">{c.label}</div>
             </Card>
           </motion.div>
         ))}
       </motion.div>
 
       <div className="mt-6 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-slate-800">Recent verifications</h2>
-        <Link to="/dashboard/verifications" className="text-xs font-medium text-indigo-600 hover:text-indigo-700">View all</Link>
+        <h2 className="text-sm font-semibold text-foreground">Recent verifications</h2>
+        <Link to="/dashboard/verifications" className="text-xs font-medium text-primary hover:text-primary">View all</Link>
       </div>
-      <Card className="mt-2 divide-y divide-slate-100">
+      <Card className="mt-2 divide-y divide-border">
         {recent.length === 0 ? (
-          <div className="p-6 text-center text-sm text-slate-400">No verifications yet.</div>
+          <div className="p-6 text-center text-sm text-muted-foreground">No verifications yet.</div>
         ) : recent.map((s) => (
           <div key={s.session_id} className="flex items-center justify-between px-4 py-3">
-            <span className="font-mono text-xs text-slate-600">{s.session_id.slice(0, 12)}…</span>
+            <span className="font-mono text-xs text-muted-foreground">{s.session_id.slice(0, 12)}…</span>
             <div className="flex items-center gap-3">
-              <span className="text-xs text-slate-400">{new Date(s.created_at).toLocaleDateString()}</span>
+              <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleDateString()}</span>
               <StatusPill status={s.status} />
             </div>
           </div>

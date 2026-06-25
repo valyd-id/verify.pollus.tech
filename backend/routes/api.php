@@ -10,6 +10,7 @@ use App\Http\Controllers\Console\WorkflowController as ConsoleWorkflowController
 use App\Http\Controllers\CredentialDiscoveryController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\HostedController;
+use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StandaloneController;
 use App\Http\Controllers\WorkflowController;
@@ -62,6 +63,13 @@ Route::prefix('console')->middleware('console.auth')->group(function () {
     Route::put('apps/{app}/webhook', [WebhookController::class, 'update']);
     Route::post('apps/{app}/webhook/rotate-secret', [WebhookController::class, 'rotateSecret']);
 
+    // Multiple webhook destinations (events fan out to every active endpoint).
+    Route::get('apps/{app}/webhooks', [WebhookController::class, 'list']);
+    Route::post('apps/{app}/webhooks', [WebhookController::class, 'create']);
+    Route::patch('apps/{app}/webhooks/{id}', [WebhookController::class, 'updateEndpoint']);
+    Route::delete('apps/{app}/webhooks/{id}', [WebhookController::class, 'destroyEndpoint']);
+    Route::post('apps/{app}/webhooks/{id}/rotate-secret', [WebhookController::class, 'rotateEndpointSecret']);
+
     Route::get('apps/{app}/sessions', [ConsoleSessionController::class, 'index']);
 
     // Prepaid account balance (per console user, across all their apps).
@@ -90,6 +98,10 @@ Route::prefix('v2')->middleware('project.key')->group(function () {
     Route::get('session/{id}', [SessionController::class, 'show']);
     Route::get('session/{id}/decision', [SessionController::class, 'decision']);
     Route::patch('session/{id}/status', [SessionController::class, 'updateStatus']);
+
+    // --- Reusable verified identity ("verify once, reuse") read + revoke ---
+    Route::get('identity', [IdentityController::class, 'show']); // ?vendor_data= or ?pollus_id=
+    Route::delete('identity/{pollus_id}', [IdentityController::class, 'revoke']);
 
     // --- Credential discovery (states + license types/providers) ---
     Route::get('credential/states', [CredentialDiscoveryController::class, 'states']);
@@ -120,6 +132,11 @@ Route::prefix('hosted/{token}')->middleware('session.token')->group(function () 
     Route::post('documents', [HostedController::class, 'uploadDocument']);
     Route::post('run/{check}', [HostedController::class, 'runCheck']);
     Route::post('decline', [HostedController::class, 'decline']);
+    // Managed Identity by Valyd — returning user re-verifies with a selfie only,
+    // matched against the verify-side copy. The session is already bound to the
+    // Valyd identity at creation (the integrator passes the user's access token),
+    // so there is no in-popup login step.
+    Route::post('reuse/face', [HostedController::class, 'reuseFace']);
 });
 
 // Result is resolved directly by session_token (works on terminal sessions),
