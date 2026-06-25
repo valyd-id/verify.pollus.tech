@@ -1,5 +1,17 @@
 <?php
 
+// Single switch for which Valyd environment this verify instance talks to. Each
+// deployment sets VALYD_ENV (development | staging | production); it derives the
+// IdP origin so verify always validates end-user tokens against the SAME IdP that
+// issued them (and the console-login OIDC uses that IdP too). An explicit
+// IDP_BASE_URL / VALYD_OIDC_BASE_URL still overrides this.
+$valydEnv = env('VALYD_ENV', 'development');
+$idpBaseDefault = [
+    'development' => 'https://idp.pollus.tech',
+    'staging'     => 'https://idp.pollus.online',
+    'production'  => 'https://idp.valyd.id',
+][$valydEnv] ?? 'https://idp.pollus.tech';
+
 return [
 
     /*
@@ -29,7 +41,7 @@ return [
     // Valyd SSO (OIDC relying-party) for the developer console login.
     // Register a client at idp.pollus.tech with redirect_uri = {APP}/dashboard/auth/callback.
     'valyd_oidc' => [
-        'base_url' => env('VALYD_OIDC_BASE_URL', 'https://idp.pollus.tech'),
+        'base_url' => env('VALYD_OIDC_BASE_URL', $idpBaseDefault),
         'authorize_path' => env('VALYD_OIDC_AUTHORIZE_PATH', 'api/auth/oidc/authorize'),
         'token_path' => env('VALYD_OIDC_TOKEN_PATH', 'api/auth/oidc/token'),
         'userinfo_path' => env('VALYD_OIDC_USERINFO_PATH', 'api/auth/oidc/userinfo'),
@@ -44,7 +56,7 @@ return [
     // data backend-to-backend. TPSSO endpoints use client_id/client_secret + the
     // user's access token; the internal endpoints use the shared X-Internal-Auth key.
     'idp' => [
-        'base_url' => env('IDP_BASE_URL', 'https://idp.pollus.tech'),
+        'base_url' => env('IDP_BASE_URL', $idpBaseDefault),
         'internal_auth_key' => env('IDP_INTERNAL_AUTH_KEY'),
         'tpsso_client_id' => env('IDP_TPSSO_CLIENT_ID'),
         'tpsso_client_secret' => env('IDP_TPSSO_CLIENT_SECRET'),
