@@ -1,0 +1,13 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    uses: valyd-id/.github/.github/workflows/deploy.yml@main
+    with:
+      app_directory: /var/www/pollus_main_servers/verify.pollus.tech
+    secrets: inherit
