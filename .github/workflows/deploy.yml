@@ -1,13 +1,149 @@
-name: Deploy
+name: Deploy (dev)
 
+# Manual trigger only — run from the Actions tab (Run workflow) so a deploy
+# never fires automatically on push. Add the `push:` block back later to
+# enable auto-deploy on every merge to main.
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      run_migrations:
+        description: "Run database migrations? (backs up Postgres first; leave OFF unless this deploy contains schema changes)"
+        type: boolean
+        default: false
+
+# Prevent overlapping deploys from stacking up if you push twice quickly.
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    uses: valyd-id/.github/.github/workflows/deploy.yml@main
-    with:
-      app_directory: /var/www/pollus_main_servers/verify.pollus.tech
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to dev server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          script_stop: true   # abort on the first failing command
+          script: |
+            set -euo pipefail
+            APP=/var/www/pollus_main_servers/verify.pollus.tech
+            cd "$APP"
+
+            git fetch --all --prune
+
+            # Safety guard: refuse to deploy if someone hand-edited TRACKED files
+            # on the server, so we never silently discard their work.
+            #
+            # frontend/dist and frontend/node_modules are tracked but rewritten by
+            # every build, so changes to *those* are expected and excluded from the
+            # check. Untracked files are ignored (-uno) since reset --hard keeps
+            # them anyway. Anything else dirty -> abort and report.
+            DIRTY=$(git status --porcelain -uno -- . ':!frontend/dist' ':!frontend/node_modules')
+            if [ -n "$DIRTY" ]; then
+              echo "ERROR: the dev server has uncommitted changes to tracked files:" >&2
+              echo "$DIRTY" >&2
+              echo "" >&2
+              echo "Refusing to deploy so these are not discarded. On the server, either" >&2
+              echo "commit & push them, stash them (git stash), or revert (git checkout --)," >&2
+              echo "then re-run this workflow. (.env and vendor/ are gitignored and unaffected.)" >&2
+              exit 1
+            fi
+
+            # Safety guard 2: refuse to deploy if the server has local COMMITS that
+            # aren't on origin/main. reset --hard would abandon them (recoverable only
+            # via reflog), so stop and let a human push/rebase them first.
+            AHEAD=$(git rev-list --count origin/main..HEAD)
+            if [ "$AHEAD" -gt 0 ]; then
+              echo "ERROR: the dev server has $AHEAD local commit(s) not on origin/main:" >&2
+              git log --oneline origin/main..HEAD >&2
+              echo "" >&2
+              echo "Refusing to deploy so these commits are not abandoned. On the server," >&2
+              echo "push them (git push), rebase them onto main, or remove them, then re-run." >&2
+              exit 1
+            fi
+
+            # Clean tree, no unpushed commits (only build artifacts may differ) ->
+            # sync to origin/main. reset --hard discards the stale committed dist/
+            # so npm rebuilds fresh.
+            git reset --hard origin/main
+
+            # --- Backend (vendor/ is NOT committed) ---
+            cd "$APP/backend"
+            composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+            # --- Frontend SPA build (Node is installed on the dev box) ---
+            cd "$APP/frontend"
+            npm ci
+            npm run build
+
+            # --- Laravel post-deploy ---
+            cd "$APP/backend"
+
+            # Migrations are OPT-IN via the "Run database migrations?" checkbox
+            # on the Run-workflow form. When ticked, take a Postgres dump first
+            # so any bad migration is recoverable; if the dump fails, set -e
+            # aborts BEFORE migrate runs (so we never migrate without a backup).
+            if [ "${{ inputs.run_migrations }}" = "true" ]; then
+              echo ">> run_migrations=true — backing up Postgres, then migrating"
+
+              # Pull DB creds straight from the live .env (values may be quoted;
+              # cut -f2- keeps everything after the first '=').
+              DB_DATABASE=$(grep -E '^DB_DATABASE=' .env | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_USERNAME=$(grep -E '^DB_USERNAME=' .env | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_PASSWORD=$(grep -E '^DB_PASSWORD=' .env | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_HOST=$(grep -E '^DB_HOST=' .env | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_PORT=$(grep -E '^DB_PORT=' .env | head -n1 | cut -d= -f2- | tr -d '"')
+
+              BACKUP_DIR="$APP/db-backups"
+              mkdir -p "$BACKUP_DIR"
+              STAMP=$(date +%Y%m%d-%H%M%S)
+              BACKUP_FILE="$BACKUP_DIR/${DB_DATABASE:-verify_valyd}_$STAMP.sql"
+
+              PGPASSWORD="${DB_PASSWORD:-}" pg_dump \
+                -U "${DB_USERNAME:-postgres}" \
+                -h "${DB_HOST:-127.0.0.1}" \
+                -p "${DB_PORT:-5432}" \
+                "${DB_DATABASE:-verify_valyd}" > "$BACKUP_FILE"
+              echo ">> Backup written: $BACKUP_FILE ($(du -h "$BACKUP_FILE" | cut -f1))"
+
+              php artisan migrate --force
+            else
+              echo ">> run_migrations=false — skipping migrate. Pending migrations:"
+              php artisan migrate:status || true
+            fi
+
+            php artisan config:cache
+            # NOTE: no `route:cache` — routes/web.php uses a Closure for `/`,
+            # which makes route caching fail. Convert it to a controller to enable.
+
+            # Make storage + cache writable by the web user (php-fpm runs as www-data).
+            # Requires DEV_USER to have passwordless sudo for chown; drop the
+            # `sudo` if the deploy user already owns these paths.
+            sudo chown -R www-data:www-data storage bootstrap/cache
+
+            # Gracefully roll the queue workers so they pick up new code.
+            # Works whether they are managed by supervisor or pm2 (autorestart
+            # brings them back). schedule:work spawns fresh subprocesses so it
+            # picks up new code on its own.
+            php artisan queue:restart
+
+            # --- Post-deploy smoke test ---
+            # Fail the job (red) if the site isn't actually healthy after deploy.
+            # Retries a few times to allow php-fpm/opcache to settle. Checks both
+            # the Laravel health endpoint (/up) and the SPA root (index.html).
+            echo ">> Smoke test: https://verify.pollus.tech"
+            check() {
+              for i in 1 2 3 4 5; do
+                code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$1" || echo "000")
+                if [ "$code" = "200" ]; then echo "  [ OK ]  $1 -> 200"; return 0; fi
+                echo "  ...   $1 -> $code (attempt $i, retrying)"; sleep 3
+              done
+              echo "  [FAIL] $1 never returned 200 (last: $code)" >&2
+              return 1
+            }
+            check https://verify.pollus.tech/up        # Laravel API / php-fpm
+            check https://verify.pollus.tech/           # SPA index.html
+            echo ">> Deploy complete and site healthy."

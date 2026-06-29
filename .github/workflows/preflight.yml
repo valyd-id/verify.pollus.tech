@@ -1,0 +1,94 @@
+name: Preflight (dev) — connectivity check
+
+# Read-only diagnostics for the dev server. Makes NO changes: no git pull,
+# no build, no migrate. Use this to validate SSH access, required tooling,
+# passwordless sudo, and git/DB reachability BEFORE running a real deploy.
+# Run from the Actions tab → "Preflight (dev)" → Run workflow.
+on:
+  workflow_dispatch:
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check dev server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          # NOTE: script_stop is intentionally OFF so every check runs and
+          # reports, instead of aborting at the first missing tool.
+          script: |
+            APP=/var/www/pollus_main_servers/verify.pollus.tech
+            ok()   { echo "  [ OK ]  $1"; }
+            warn() { echo "  [WARN]  $1"; }
+            bad()  { echo "  [FAIL]  $1"; }
+
+            echo "==> Identity"
+            echo "  user : $(whoami)"
+            echo "  host : $(hostname)"
+            echo "  pwd  : $(pwd)"
+
+            echo "==> Required tools on PATH"
+            for t in git php composer npm node pg_dump; do
+              if command -v "$t" >/dev/null 2>&1; then
+                ok "$t -> $(command -v "$t")  ($($t --version 2>/dev/null | head -n1))"
+              else
+                bad "$t NOT found on PATH"
+              fi
+            done
+
+            echo "==> Passwordless sudo (needed for the chown step)"
+            if sudo -n true 2>/dev/null; then
+              ok "sudo -n works (passwordless)"
+            else
+              warn "sudo needs a password — the deploy chown will hang/fail. Configure NOPASSWD or remove sudo from deploy.yml."
+            fi
+
+            echo "==> App directory"
+            if [ -d "$APP" ]; then
+              ok "$APP exists"
+              if [ -w "$APP" ]; then ok "$APP is writable by $(whoami)"; else warn "$APP is NOT writable by $(whoami)"; fi
+            else
+              bad "$APP does NOT exist"
+            fi
+
+            echo "==> Backend .env + writable paths"
+            if [ -f "$APP/backend/.env" ]; then ok "backend/.env present"; else bad "backend/.env MISSING (deploy will run with no config)"; fi
+            for d in "$APP/backend/storage" "$APP/backend/bootstrap/cache"; do
+              if [ -w "$d" ]; then ok "writable: $d"; else warn "not writable by $(whoami): $d (chown step handles this)"; fi
+            done
+
+            echo "==> Git remote reachability (read-only, no pull)"
+            if [ -d "$APP/.git" ]; then
+              if git -C "$APP" ls-remote --heads origin main >/dev/null 2>&1; then
+                ok "origin reachable; current HEAD: $(git -C "$APP" rev-parse --short HEAD 2>/dev/null)"
+              else
+                bad "cannot reach git origin (check the server's deploy key / remote)"
+              fi
+            else
+              bad "$APP is not a git repo"
+            fi
+
+            echo "==> Postgres reachability (read-only: SELECT 1)"
+            if command -v psql >/dev/null 2>&1 && [ -f "$APP/backend/.env" ]; then
+              DB_DATABASE=$(grep -E '^DB_DATABASE=' "$APP/backend/.env" | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_USERNAME=$(grep -E '^DB_USERNAME=' "$APP/backend/.env" | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_PASSWORD=$(grep -E '^DB_PASSWORD=' "$APP/backend/.env" | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_HOST=$(grep -E '^DB_HOST=' "$APP/backend/.env" | head -n1 | cut -d= -f2- | tr -d '"')
+              DB_PORT=$(grep -E '^DB_PORT=' "$APP/backend/.env" | head -n1 | cut -d= -f2- | tr -d '"')
+              if PGPASSWORD="${DB_PASSWORD:-}" psql -U "${DB_USERNAME:-postgres}" -h "${DB_HOST:-127.0.0.1}" -p "${DB_PORT:-5432}" -d "${DB_DATABASE:-verify_valyd}" -c 'SELECT 1;' >/dev/null 2>&1; then
+                ok "connected to Postgres db '${DB_DATABASE:-verify_valyd}'"
+              else
+                warn "could not connect to Postgres with .env creds (migrate/backup would fail)"
+              fi
+            else
+              warn "psql not installed or .env missing — skipping DB check (pg_dump backup may also be unavailable)"
+            fi
+
+            echo "==> Live site health"
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://verify.pollus.tech/up || echo "ERR")
+            if [ "$code" = "200" ]; then ok "https://verify.pollus.tech/up -> 200"; else warn "https://verify.pollus.tech/up -> $code"; fi
+
+            echo "==> Preflight finished (review any [WARN]/[FAIL] above before deploying)"
