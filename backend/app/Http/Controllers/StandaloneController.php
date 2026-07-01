@@ -14,7 +14,10 @@ use App\Services\Checks\FaceMatchRunner;
 use App\Services\Checks\IdVerificationRunner;
 use App\Services\Checks\LivenessRunner;
 use App\Services\Checks\LocationRunner;
+use App\Services\Checks\LocationMatchRunner;
 use App\Services\BillingService;
+use App\Services\CredentialClient;
+use App\Services\IdpClient;
 use App\Services\SessionService;
 use App\Support\ImageInput;
 use Illuminate\Http\Request;
@@ -34,8 +37,57 @@ class StandaloneController extends Controller
         private AgeRunner $ageRunner,
         private CredentialRunner $credentialRunner,
         private LocationRunner $locationRunner,
+        private LocationMatchRunner $locationMatchRunner,
         private BillingService $billing,
+        private IdpClient $idp,
+        private CredentialClient $credential,
     ) {
+    }
+
+    /**
+     * Auto-resolve a `provider_code` (+ credential_code) from state + a friendly
+     * license type (default "md"). So integrators pass state + "MD"/"RN"/… and
+     * never need to know internal provider codes like `apps2_colorado_gov`.
+     *
+     * @return array{provider_code:?string, credential_code:?string}
+     */
+    private function resolveProvider(?string $state, ?string $type): array
+    {
+        $type = strtolower(trim((string) ($type ?: 'md')));
+        // Friendly type → keywords to match against the provider's credential.
+        $wants = match (true) {
+            str_contains($type, 'md'), str_contains($type, 'physician'), str_contains($type, 'medical'), str_contains($type, 'doctor') => ['physician', 'medical', 'md'],
+            str_contains($type, 'do'), str_contains($type, 'osteo') => ['osteopath', 'do'],
+            str_contains($type, 'np'), str_contains($type, 'nurse practitioner') => ['nurse practitioner', 'np'],
+            str_contains($type, 'rn'), str_contains($type, 'nurse') => ['registered nurse', 'nurse', 'rn'],
+            str_contains($type, 'pa'), str_contains($type, 'assistant') => ['physician assistant', 'pa'],
+            default => [$type],
+        };
+        try {
+            $providers = $this->credential->providers((string) $state);
+            $list = $providers['data']['providers'] ?? $providers['providers'] ?? (is_array($providers) ? $providers : []);
+            foreach ($list as $p) {
+                $hay = strtolower(($p['credential_name'] ?? '') . ' ' . ($p['credential_code'] ?? '') . ' ' . ($p['remote_code'] ?? ''));
+                if ($hay === '') {
+                    continue;
+                }
+                foreach ($wants as $w) {
+                    // Short codes (md/do/pa/np) must match whole-word, or they hit substrings.
+                    $ok = strlen($w) <= 3
+                        ? (bool) preg_match('/\b' . preg_quote($w, '/') . '\b/', $hay)
+                        : str_contains($hay, $w);
+                    if ($ok) {
+                        return [
+                            'provider_code' => $p['provider_code'] ?? null,
+                            'credential_code' => $p['credential_code'] ?? ($p['remote_code'] ?? null),
+                        ];
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // fall through — caller keeps whatever was provided
+        }
+        return ['provider_code' => null, 'credential_code' => null];
     }
 
     private function project(Request $request): VerificationProject
@@ -146,6 +198,119 @@ class StandaloneController extends Controller
         return $this->respond($request, 'location', $result);
     }
 
+    /**
+     * Location MATCH: captured GPS vs an expected point → { match, distance_m }.
+     * The sellable "proof of presence" check (unlike `location`, which only geocodes).
+     */
+    public function locationMatch(Request $request)
+    {
+        if ($err = $this->guardFeature($request, 'location_match')) {
+            return $err;
+        }
+        $v = $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'accuracy' => 'nullable|numeric',
+            'expected_latitude' => 'required|numeric',
+            'expected_longitude' => 'required|numeric',
+            'radius_m' => 'nullable|numeric',
+        ]);
+        $result = $this->billing->runCharged($this->owner($request), 'location_match', fn () => $this->locationMatchRunner->run(
+            (float) $v['latitude'],
+            (float) $v['longitude'],
+            (float) $v['expected_latitude'],
+            (float) $v['expected_longitude'],
+            isset($v['radius_m']) ? (float) $v['radius_m'] : null,
+            isset($v['accuracy']) ? (float) $v['accuracy'] : null,
+        ));
+        return $this->respond($request, 'location_match', $result);
+    }
+
+    /**
+     * EVV Presence bundle: face match (selfie vs reference) + location match
+     * (captured vs expected) in one call → proves the right person is at the
+     * right place. Billed once as `evv_presence` (below the sum of the parts).
+     */
+    public function evvPresence(Request $request)
+    {
+        if ($err = $this->guardFeature($request, 'evv_presence')) {
+            return $err;
+        }
+        // ACCOUNT mode: pass a `valyd_access_token` (or `pollus_id`) + only a `selfie`.
+        // The selfie is matched against the user's STORED Valyd face vector — no ID image.
+        // FRESH mode: pass two images (`image1` reference + `image2` selfie).
+        $accountToken = $request->input('valyd_access_token');
+        $pollusId = $request->input('pollus_id');
+        $selfieBytes = ImageInput::bytes($request, 'image2') ?? ImageInput::bytes($request, 'selfie');
+        $isAccount = !empty($accountToken) || !empty($pollusId);
+
+        if ($selfieBytes === null) {
+            return GlobalHelper::apiError('invalid_image', 'A `selfie` is required.', 400);
+        }
+        $idBytes = null;
+        if (!$isAccount) {
+            $idBytes = ImageInput::bytes($request, 'image1') ?? ImageInput::bytes($request, 'id_image');
+            if ($idBytes === null) {
+                return GlobalHelper::apiError('invalid_image', 'Provide `valyd_access_token` (account) OR `image1` (reference) for a fresh face match.', 400);
+            }
+        }
+        // Validate coordinates BEFORE any network call so a bad request 422s cheaply.
+        $v = $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'accuracy' => 'nullable|numeric',
+            'expected_latitude' => 'required|numeric',
+            'expected_longitude' => 'required|numeric',
+            'radius_m' => 'nullable|numeric',
+        ]);
+
+        // Resolve the stable pollus_id for account mode.
+        if ($isAccount && empty($pollusId)) {
+            $info = $this->idp->userinfo($accountToken);
+            if (!($info['ok'] ?? false) || empty($info['pollus_id'])) {
+                return GlobalHelper::apiError('valyd_login_required', 'valyd_access_token is invalid or expired.', 401);
+            }
+            $pollusId = $info['pollus_id'];
+        }
+
+        $result = $this->billing->runCharged($this->owner($request), 'evv_presence', function () use ($idBytes, $selfieBytes, $isAccount, $pollusId, $v) {
+            if ($isAccount) {
+                // Selfie vs the stored Valyd face vector (only the selfie leaves the integrator).
+                $m = $this->idp->faceMatch($pollusId, base64_encode($selfieBytes));
+                if (!($m['ok'] ?? false)) {
+                    // Face service unreachable — not a mismatch. Return an error so billing refunds.
+                    return GlobalHelper::apiError('face_match_unavailable', 'Could not match the face right now. Please try again.', 502);
+                }
+                $face = ($m['match'] ?? false)
+                    ? CheckResult::passed(VerificationCheck::TYPE_FACE_MATCH, $m['score'] ?? null, ['similarity' => $m['score'] ?? null, 'source' => 'valyd_account'])
+                    : CheckResult::failed(VerificationCheck::TYPE_FACE_MATCH, 'Face does not match the Valyd account', $m['score'] ?? null, ['similarity' => $m['score'] ?? null, 'source' => 'valyd_account']);
+            } else {
+                $face = $this->faceMatchRunner->run($idBytes, $selfieBytes);
+            }
+            $loc = $this->locationMatchRunner->run(
+                (float) $v['latitude'],
+                (float) $v['longitude'],
+                (float) $v['expected_latitude'],
+                (float) $v['expected_longitude'],
+                isset($v['radius_m']) ? (float) $v['radius_m'] : null,
+                isset($v['accuracy']) ? (float) $v['accuracy'] : null,
+            );
+            $ok = $face->status === VerificationCheck::STATUS_PASSED && $loc->status === VerificationCheck::STATUS_PASSED;
+            $data = [
+                'face_match' => $face->toArray(),
+                'location_match' => $loc->toArray(),
+                'verified' => $ok,
+            ];
+            return $ok
+                ? CheckResult::passed(VerificationCheck::TYPE_EVV_PRESENCE, $face->score, $data)
+                : CheckResult::failed(VerificationCheck::TYPE_EVV_PRESENCE, 'presence_not_verified', $face->score, $data);
+        });
+        if ($result instanceof \Illuminate\Http\JsonResponse) {
+            return $result; // face service unavailable (already refunded)
+        }
+        return $this->respond($request, 'evv_presence', $result);
+    }
+
     public function credentialVerification(Request $request)
     {
         if ($err = $this->guardFeature($request, 'credential')) {
@@ -163,6 +328,20 @@ class StandaloneController extends Controller
             'license_no' => 'nullable|string',
             'npi' => 'nullable|string',
         ]);
+        // If no provider_code was given, resolve it from state + license_type
+        // (default "md"), so integrators only need state + a friendly type.
+        if (empty($input['provider_code'])) {
+            $state = $input['license_state'] ?? ($input['state'] ?? null);
+            $resolved = $this->resolveProvider($state, $input['license_type'] ?? null);
+            if (!empty($resolved['provider_code'])) {
+                $input['provider_code'] = $resolved['provider_code'];
+                // Use the resolved board-specific credential_code (e.g. co_medical_doctor)
+                // in place of the friendly type the caller sent ("MD").
+                if (!empty($resolved['credential_code'])) {
+                    $input['license_type'] = $resolved['credential_code'];
+                }
+            }
+        }
         $result = $this->billing->runCharged($this->owner($request), 'credential', fn () => $this->credentialRunner->run($input));
         return $this->respond($request, 'credential', $result);
     }
@@ -264,6 +443,16 @@ class StandaloneController extends Controller
         if (!$session->isTerminal()) {
             unset($license['first_name'], $license['last_name']);
             $license['full_name'] = $name;
+            // Auto-resolve the provider from state + type (default MD) when omitted.
+            if (empty($license['provider_code'])) {
+                $resolved = $this->resolveProvider($license['license_state'] ?? ($license['state'] ?? null), $license['license_type'] ?? null);
+                if (!empty($resolved['provider_code'])) {
+                    $license['provider_code'] = $resolved['provider_code'];
+                    if (!empty($resolved['credential_code'])) {
+                        $license['license_type'] = $resolved['credential_code'];
+                    }
+                }
+            }
             $credential = $this->billing->runCharged($owner, 'credential', fn () => $this->credentialRunner->run($license), $session->id);
             $session = $this->sessions->recordCheck($session, $credential);
             $checks[] = $credential->toArray();

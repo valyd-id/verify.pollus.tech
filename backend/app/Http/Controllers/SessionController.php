@@ -8,6 +8,7 @@ use App\Models\VerificationSession;
 use App\Services\BillingService;
 use App\Services\IdpClient;
 use App\Services\ReusableIdentityService;
+use App\Services\Checks\CheckResult;
 use App\Services\SessionService;
 use Illuminate\Http\Request;
 
@@ -100,15 +101,64 @@ class SessionController extends Controller
             ]
         );
 
+        // Managed Identity reuse: pre-satisfy steps we ALREADY have for this Valyd
+        // user so a returning, verified user isn't asked to redo them. KYC (id +
+        // liveness) is satisfied by the account's human_verified flag; the license
+        // (credential) by a stored/verified license. Face match is NEVER prefilled —
+        // the returning user re-confirms with a live selfie. Location is per-visit.
+        if ($pollusId && (bool) ($settings['reuse'] ?? false)) {
+            $this->prefillManagedIdentity($session, $project, $pollusId, $validated['valyd_access_token'] ?? null);
+            $session->refresh();
+        }
+
         return GlobalHelper::apiSuccess([
             'session_id' => $session->id,
             'status' => $session->status,
             'url' => $this->sessions->hostedUrl($session),
             'session_token' => $session->session_token,
             'features' => $session->features,
+            'reused_features' => $session->checks()->where('status', 'passed')->pluck('type'),
             'redirect_url' => $session->redirect_url,
             'expires_at' => $session->expires_at->toIso8601String(),
         ], 201);
+    }
+
+    /** Mark already-verified steps as passed (reused) for a returning Valyd user. */
+    private function prefillManagedIdentity(VerificationSession $session, $project, string $pollusId, ?string $token): void
+    {
+        $features = $session->features;
+        $ver = $token ? $this->idp->verifications($token) : ['human_verified' => false, 'id_verified' => false, 'licenses' => []];
+        $rec = $this->reusable->findActive($project->id, $pollusId);
+        $kyc = ($ver['human_verified'] ?? false) || ($ver['id_verified'] ?? false) || $rec !== null;
+        // Only reuse licenses that are actually verified/active — never an expired or
+        // pending one (a returning user must re-verify a lapsed license).
+        $rawLicenses = $ver['licenses'] ?: ($rec?->licenses ?? []);
+        $licenses = array_values(array_filter($rawLicenses, function ($l) {
+            $status = strtolower((string) ($l['status'] ?? ''));
+            return ($l['verified'] ?? false) === true || in_array($status, ['verified', 'active', 'valid', 'current'], true);
+        }));
+
+        $mark = function (string $type, array $data) use ($session) {
+            $this->sessions->recordCheck($session, CheckResult::passed($type, null, array_merge(['reused' => true], $data)));
+        };
+
+        // KYC: id_verification + liveness satisfied by the account being human-verified.
+        if ($kyc) {
+            foreach (['id_verification', 'liveness'] as $f) {
+                if (in_array($f, $features, true)) {
+                    $mark($f, ['source' => 'valyd_account', 'human_verified' => true]);
+                }
+            }
+        }
+        // License: satisfied when a verified license is already stored on the account.
+        if (in_array('credential', $features, true) && !empty($licenses)) {
+            $mark('credential', ['source' => 'valyd_account', 'licenses' => array_values($licenses)]);
+        }
+        // Age bands, if stored.
+        if (in_array('age', $features, true) && $rec && !empty($rec->age_bands)) {
+            $mark('age', ['source' => 'valyd_account', 'age_bands' => $rec->age_bands]);
+        }
+        // face_match, location, location_match, evv_presence are intentionally left pending.
     }
 
     public function index(Request $request)

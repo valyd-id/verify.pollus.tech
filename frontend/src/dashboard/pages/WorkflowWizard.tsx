@@ -10,6 +10,14 @@ import { api, type App, type Workflow } from "../api";
  * wired to api.createWorkflow on the final step.
  */
 
+// Environment-driven base URLs — same code across dev / staging / prod. Set
+// VITE_VERIFY_BASE_URL / VITE_VALYD_IDP_URL / VITE_DEV_PORTAL_URL per deployment.
+const ENV = import.meta.env;
+const BASE = (ENV.VITE_VERIFY_BASE_URL as string) ?? "https://verify.valyd.id";
+const IDP = (ENV.VITE_VALYD_IDP_URL as string) ?? "https://idp.valyd.id";
+const DEV = (ENV.VITE_DEV_PORTAL_URL as string) ?? "https://dev.valyd.id";
+const host = (u: string) => u.replace(/^https?:\/\//, "");
+
 type Product = "sso" | "verify";
 type Mode = "hosted" | "standalone";
 type Recheck = "per_action" | "scheduled" | "expiry";
@@ -23,6 +31,8 @@ const SERVICE_LABEL: Record<string, string> = {
   age: "Age band check",
   credential: "Professional license",
   location: "Location of service (geofence)",
+  location_match: "Location match (captured vs expected)",
+  evv_presence: "EVV Presence (face + location)",
   vin: "VIN lookup (vehicle match)",
 };
 const CHECK_DESC: Record<string, string> = {
@@ -32,13 +42,25 @@ const CHECK_DESC: Record<string, string> = {
   age: "Confirms an age band (18+, 21+) from date of birth.",
   credential: "Looks up a professional license in the state registry and returns its live status.",
   location: "Confirms the person is inside a geofence at the moment of the action.",
+  location_match: "Matches captured GPS to an expected location → { match, distance_m }. Coarse fixes are flagged.",
+  evv_presence: "Bundle: face match + location match in one step — proves the right person is at the right place.",
 };
 const PREVIEW_DESC: Record<string, string> = {
   vin: "Matches the driver to the assigned vehicle by VIN at pickup / handoff. In active development — wire for it now, results arrive once it ships.",
 };
 // Checks that map to a real workflow feature (selectable). `vin` is preview-only.
-const REAL_CHECKS = ["id_verification", "liveness", "face_match", "age", "credential", "location"];
+const REAL_CHECKS = ["id_verification", "liveness", "face_match", "credential", "location", "location_match", "evv_presence", "age"];
 const ORDER = REAL_CHECKS;
+
+// Checks that cover / conflict with each other. Selecting the key removes these.
+// evv_presence = face_match + location_match, so it replaces both (and plain location).
+// location / location_match / evv_presence are mutually-exclusive location strategies.
+const CONFLICTS: Record<string, string[]> = {
+  evv_presence: ["face_match", "location", "location_match"],
+  location_match: ["location", "evv_presence"],
+  location: ["location_match", "evv_presence"],
+  face_match: ["evv_presence"],
+};
 
 type Vertical = {
   label: string;
@@ -52,10 +74,10 @@ type Vertical = {
 
 const VERTICALS: Record<string, Vertical> = {
   home_health: {
-    label: "Home Health",
+    label: "Home Health · EVV",
     subject: { singular: "caregiver", plural: "caregivers" },
-    defaults: ["id_verification", "liveness", "face_match", "credential"],
-    previewAvailable: ["location"],
+    defaults: ["id_verification", "liveness", "face_match", "credential", "location"],
+    previewAvailable: [],
     recheckDefault: "scheduled",
     scope:
       "Valyd confirms the caregiver's identity and that the license is currently active, and feeds that into your EVV system (Sandata, HHAeXchange, etc.) — Valyd is the identity + presence layer, not the EVV record itself. The live-license recheck matters most: a lapsed license invalidates the EVV record and the visit becomes unbillable.",
@@ -194,10 +216,21 @@ export function WorkflowWizard({ app, onClose, onCreated }: { app: App; onClose:
 
   const toggleService = (s: string) => {
     setServices((prev) => {
-      const nextArr = prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s];
+      let nextArr = prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s];
+      // Turning a check ON removes the checks it already covers / conflicts with.
+      if (!prev.includes(s)) nextArr = nextArr.filter((x) => !(CONFLICTS[s] ?? []).includes(x));
       return [...nextArr].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
     });
   };
+  // Why a check is greyed out (because a selected check already covers it), or null.
+  const disabledBecause = (s: string): string | null => {
+    if (services.includes(s)) return null;
+    if (services.includes("evv_presence") && (CONFLICTS.evv_presence).includes(s)) return "Included in EVV Presence";
+    if (services.includes("location_match") && s === "location") return "Use one location check";
+    if (services.includes("location") && s === "location_match") return "Use one location check";
+    return null;
+  };
+  const needsExpectedLocation = services.includes("location_match") || services.includes("evv_presence");
 
   const next = () => {
     if (!ready || creating) return;
@@ -333,7 +366,7 @@ export function WorkflowWizard({ app, onClose, onCreated }: { app: App; onClose:
                 </div>
                 {product === "sso" && (
                   <div className="vw-note teal">
-                    Managed logs the user in with Valyd. Register your login app at <a href="https://dev.pollus.tech" target="_blank" rel="noopener noreferrer">dev.pollus.tech</a> to get a <b>client_id</b> / <b>client_secret</b>, then pass the user's Valyd access token when you create a verify session.
+                    Managed logs the user in with Valyd. Register your login app at <a href={DEV} target="_blank" rel="noopener noreferrer">{host(DEV)}</a> to get a <b>client_id</b> / <b>client_secret</b>, then pass the user's Valyd access token when you create a verify session.
                   </div>
                 )}
               </>
@@ -361,10 +394,19 @@ export function WorkflowWizard({ app, onClose, onCreated }: { app: App; onClose:
                 <h1 className="vw-head">What does each verification check?</h1>
                 <p className="vw-sub">Pre-filled for {vert.label}. Toggle anything you don't need. {product === "sso" ? "These run on verify and attach to the Valyd identity." : product === "verify" && mode === "hosted" ? "These become a Workflow you reference by id." : "Each maps to one endpoint, or one combined call."}</p>
                 <div className="vw-opts">
-                  {REAL_CHECKS.map((s) => (
-                    <Opt key={s} check active={services.includes(s)} title={SERVICE_LABEL[s]} desc={CHECK_DESC[s]} onClick={() => toggleService(s)} />
-                  ))}
+                  {REAL_CHECKS.map((s) => {
+                    const off = disabledBecause(s);
+                    return (
+                      <Opt key={s} check active={services.includes(s)} disabled={!!off}
+                        title={SERVICE_LABEL[s]} desc={off ? off : CHECK_DESC[s]}
+                        pill={off ? "covered" : undefined}
+                        onClick={() => toggleService(s)} />
+                    );
+                  })}
                 </div>
+                {needsExpectedLocation && (
+                  <div className="vw-note">📍 The <b>expected location</b> isn't set on the workflow — you pass it <b>per session</b> when you create it (<code>metadata.expected_lat</code> / <code>expected_lng</code>), because the target changes each visit. In hosted flows the device GPS is captured for you; the check matches it to that expected point.</div>
+                )}
                 {hasCredential && (
                   <div className="vw-note">⚠ The license is matched to the <b>name read off the verified ID</b> — never a name your code supplies — so someone can't pass off another person's license.</div>
                 )}
@@ -575,16 +617,21 @@ function HeroArt() {
 
 // ---------- recipe snippet + next-steps generators ----------
 function snippet(product: Product, mode: Mode | null, tab: "node" | "curl", services: string[], wf: string, vert: Vertical): string {
-  if (product === "sso") return tab === "curl" ? ssoCurl(wf) : ssoNode(wf);
-  if (mode === "hosted") return tab === "curl" ? hostedCurl(wf) : hostedNode(wf);
+  if (product === "sso") return tab === "curl" ? ssoCurl(wf, services) : ssoNode(wf, services);
+  if (mode === "hosted") return tab === "curl" ? hostedCurl(wf, services) : hostedNode(wf, services);
   return tab === "curl" ? standaloneCurl(services, vert) : standaloneNode(services, vert);
 }
 
-function ssoNode(wf: string): string {
+// True when the workflow has a check that needs an expected location per session.
+const needsLoc = (services: string[]) => services.some((s) => ["location", "location_match", "evv_presence"].includes(s));
+const LOC_NODE = `  metadata: { expected_lat: home.lat, expected_lng: home.lng }, // per-visit target for the location check`;
+const LOC_CURL = `,\n        "metadata": { "expected_lat": 37.3382, "expected_lng": -121.8863 }`;
+
+function ssoNode(wf: string, services: string[] = []): string {
   return `import { Valyd } from "valyd-verify-sdk";
 
 const valyd = new Valyd({
-  clientId: process.env.VALYD_CLIENT_ID,        // from dev.pollus.tech
+  clientId: process.env.VALYD_CLIENT_ID,        // from ${host(DEV)}
   clientSecret: process.env.VALYD_CLIENT_SECRET, // server-side only
   apiKey: process.env.VALYD_API_KEY,             // your verify API key
 });
@@ -605,35 +652,35 @@ const session = await valyd.verify.sessions.create({
   workflowId: "${wf}",
   vendorData: user.pollus_id,
   valydAccessToken: accessToken,
-  redirectUrl: "https://app.example.com/verify/done",
+  redirectUrl: "https://app.example.com/verify/done",${needsLoc(services) ? "\n" + LOC_NODE : ""}
 });
 // res.redirect(session.url)
 
 // 4) Read the authoritative decision (status + checks + identity)
 const decision = await valyd.verify.sessions.decision(session.sessionId);`;
 }
-function ssoCurl(wf: string): string {
+function ssoCurl(wf: string, services: string[] = []): string {
   return `# 1) Redirect the user to Valyd to sign in (browser)
-#    https://idp.valyd.id/api/auth/tpsso/authorize?client_id=...&redirect_uri=...&response_type=code&scope=profile%20verifications
+#    ${IDP}/api/auth/tpsso/authorize?client_id=...&redirect_uri=...&response_type=code&scope=profile%20verifications
 
 # 2) Exchange the code for the user's Valyd token (server-side)
-curl -X POST https://idp.valyd.id/api/auth/tpsso/token \\
+curl -X POST ${IDP}/api/auth/tpsso/token \\
   -H "Content-Type: application/json" \\
   -d '{ "grant_type":"authorization_code","code":"...","client_id":"...","client_secret":"..." }'
 # -> { access_token, user: { pollus_id } }
 
 # 3) Create a verify session bound to that Valyd user
-curl -X POST https://verify.pollus.tech/api/v2/session \\
+curl -X POST ${BASE}/api/v2/session \\
   -H "X-API-Key: $VALYD_API_KEY" -H "Content-Type: application/json" \\
   -d '{ "workflow_id":"${wf}", "valyd_access_token":"<access_token>",
-        "vendor_data":"<pollus_id>", "redirect_url":"https://app.example.com/verify/done" }'
+        "vendor_data":"<pollus_id>", "redirect_url":"https://app.example.com/verify/done"${needsLoc(services) ? LOC_CURL : ""} }'
 # -> { url } : redirect the user to it
 
 # 4) Read the decision
-curl https://verify.pollus.tech/api/v2/session/<session_id>/decision \\
+curl ${BASE}/api/v2/session/<session_id>/decision \\
   -H "X-API-Key: $VALYD_API_KEY"`;
 }
-function hostedNode(wf: string): string {
+function hostedNode(wf: string, services: string[] = []): string {
   return `import { Valyd } from "valyd-verify-sdk";
 
 const valyd = new Valyd({
@@ -646,7 +693,7 @@ const session = await valyd.verify.sessions.create({
   workflowId: "${wf}",
   redirectUrl: "https://app.example.com/verify/done",
   callback:    "https://api.example.com/webhooks/valyd",
-  vendorData:  "customer_123",
+  vendorData:  "customer_123",${needsLoc(services) ? "\n" + LOC_NODE : ""}
 });
 // res.redirect(session.url)
 
@@ -655,18 +702,18 @@ const event = valyd.verify.webhooks.constructEvent(rawBody, headers);
 const decision = await valyd.verify.sessions.decision(event.session_id);
 // decision.status -> APPROVED | DECLINED ; decision.checks[]`;
 }
-function hostedCurl(wf: string): string {
+function hostedCurl(wf: string, services: string[] = []): string {
   return `# 1) Create a session against your workflow
-curl -X POST https://verify.pollus.tech/api/v2/session \\
+curl -X POST ${BASE}/api/v2/session \\
   -H "X-API-Key: $VALYD_API_KEY" -H "Content-Type: application/json" \\
   -d '{ "workflow_id":"${wf}",
         "redirect_url":"https://app.example.com/verify/done",
         "callback":"https://api.example.com/webhooks/valyd",
-        "vendor_data":"customer_123" }'
+        "vendor_data":"customer_123"${needsLoc(services) ? LOC_CURL : ""} }'
 # -> { url } : redirect the person's browser to it
 
 # 2) After the webhook fires, read the full result
-curl https://verify.pollus.tech/api/v2/session/<session_id>/decision \\
+curl ${BASE}/api/v2/session/<session_id>/decision \\
   -H "X-API-Key: $VALYD_API_KEY"`;
 }
 function standaloneNode(services: string[], vert: Vertical): string {
@@ -680,6 +727,7 @@ const result = await valyd.verify.standalone.kycCredential({
   frontImage: readImage("./id_front.jpg"),
   selfie:     readImage("./selfie.jpg"),
   licenseState:  "CA",
+  licenseType:   "MD",       // default MD; provider auto-resolved (no provider_code)
   licenseNumber: "A12345",
 });
 // result.status -> passed | failed | review
@@ -696,6 +744,8 @@ const result = await valyd.verify.standalone.kycCredential({
   if (services.includes("face_match")) lines.push(`const fm   = await valyd.verify.standalone.faceMatch({ idImage: id.check.data.portrait, selfie: readImage("./selfie.jpg") });`);
   if (services.includes("age")) lines.push(`const age  = await valyd.verify.standalone.ageVerification({ dob: id.check.data.dob, bands: ["is_18_plus"] });`);
   if (services.includes("location")) lines.push(`const loc  = await valyd.verify.standalone.location({ latitude, longitude });`);
+  if (services.includes("location_match")) lines.push(`const locm = await valyd.verify.standalone.locationMatch({ latitude, longitude, expectedLatitude, expectedLongitude, radiusM: 200 });`);
+  if (services.includes("evv_presence")) lines.push(`const evv  = await valyd.verify.standalone.evvPresence({ idImage: readImage("./reference.jpg"), selfie: readImage("./selfie.jpg"), latitude, longitude, expectedLatitude, expectedLongitude, radiusM: 200 });`);
   lines.push(``, `// each returns { status, check: { score, data } }`);
   void vert;
   return lines.join("\n");
@@ -704,26 +754,27 @@ function standaloneCurl(services: string[], vert: Vertical): string {
   void vert;
   if (services.includes("credential")) {
     return `# Combined ID + liveness + face match + license, one request
-curl -X POST https://verify.pollus.tech/api/v2/kyc-credential \\
+curl -X POST ${BASE}/api/v2/kyc-credential \\
   -H "X-API-Key: $VALYD_API_KEY" \\
   -F "front_image=@./id_front.jpg" \\
   -F "selfie=@./selfie.jpg" \\
   -F "license_state=CA" \\
+  -F "license_type=MD" \\
   -F "license_number=A12345"`;
   }
   return `# ID verification
-curl -X POST https://verify.pollus.tech/api/v2/id-verification \\
+curl -X POST ${BASE}/api/v2/id-verification \\
   -H "X-API-Key: $VALYD_API_KEY" -F "front_image=@./id_front.jpg"
 
 # Liveness
-curl -X POST https://verify.pollus.tech/api/v2/liveness \\
+curl -X POST ${BASE}/api/v2/liveness \\
   -H "X-API-Key: $VALYD_API_KEY" -F "image=@./selfie.jpg"`;
 }
 
 function nextSteps(product: Product, mode: Mode | null, wf: string): string[] {
   if (product === "sso") {
     return [
-      `Register your app at <code>dev.pollus.tech</code> to get a <b>client_id</b> and <b>client_secret</b>. <a href="https://dev.pollus.tech" target="_blank" rel="noopener noreferrer">Register at dev.pollus.tech →</a>`,
+      `Register your app at <code>${host(DEV)}</code> to get a <b>client_id</b> and <b>client_secret</b>. <a href="${DEV}" target="_blank" rel="noopener noreferrer">Register at ${host(DEV)} →</a>`,
       `Add a <b>Login with Valyd</b> button that redirects to the authorize URL with your scopes.`,
       `Exchange the returned code for an <b>access token</b> (server-side).`,
       `Create a verify session against <code>${wf}</code> with the user's <b>valyd_access_token</b>, then read the decision.`,

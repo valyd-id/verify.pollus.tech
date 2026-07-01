@@ -38,6 +38,8 @@ class HostedController extends Controller
         private AgeRunner $ageRunner,
         private CredentialRunner $credentialRunner,
         private LocationRunner $locationRunner,
+        private \App\Services\Checks\LocationMatchRunner $locationMatchRunner,
+        private \App\Services\IpGeoService $ipGeo,
         private BillingService $billing,
         private IdpClient $idp,
         private ReusableIdentityService $reusable,
@@ -170,6 +172,8 @@ class HostedController extends Controller
             VerificationCheck::TYPE_AGE => $this->runAge($session, $request),
             VerificationCheck::TYPE_CREDENTIAL => $this->runCredential($session, $request),
             VerificationCheck::TYPE_LOCATION => $this->runLocation($session, $request),
+            VerificationCheck::TYPE_LOCATION_MATCH => $this->runLocationMatch($session, $request),
+            VerificationCheck::TYPE_EVV_PRESENCE => $this->runEvvPresence($session, $request),
             default => null,
         }, $session->id);
 
@@ -300,10 +304,26 @@ class HostedController extends Controller
 
     private function runFaceMatch(VerificationSession $session)
     {
-        $idBytes = $this->docBytes($session, VerificationDocument::TYPE_ID_FRONT);
         $selfie = $this->docBytes($session, VerificationDocument::TYPE_SELFIE);
-        if ($idBytes === null || $selfie === null) {
-            return GlobalHelper::apiError('missing_document', 'Both id_front and selfie are required for face-match.', 400);
+        if ($selfie === null) {
+            return GlobalHelper::apiError('missing_document', 'A selfie is required for face-match.', 400);
+        }
+        $idBytes = $this->docBytes($session, VerificationDocument::TYPE_ID_FRONT);
+        // ACCOUNT session with no ID document (KYC reused) → match the selfie against
+        // the user's STORED Valyd face vector instead of a re-scanned ID.
+        if ($idBytes === null && $session->pollus_id) {
+            $m = $this->idp->faceMatch($session->pollus_id, base64_encode($selfie));
+            if (!($m['ok'] ?? false)) {
+                // Face service unreachable — not a mismatch. Return an error so billing
+                // refunds and the user can retry (mirrors reuseFace).
+                return GlobalHelper::apiError('face_match_unavailable', 'Could not match your face right now. Please try again.', 502);
+            }
+            return ($m['match'] ?? false)
+                ? \App\Services\Checks\CheckResult::passed(VerificationCheck::TYPE_FACE_MATCH, $m['score'] ?? null, ['similarity' => $m['score'] ?? null, 'source' => 'valyd_account'])
+                : \App\Services\Checks\CheckResult::failed(VerificationCheck::TYPE_FACE_MATCH, 'Face does not match the Valyd account', $m['score'] ?? null, ['similarity' => $m['score'] ?? null, 'source' => 'valyd_account']);
+        }
+        if ($idBytes === null) {
+            return GlobalHelper::apiError('missing_document', 'A reference (id_front) or a Valyd account is required for face-match.', 400);
         }
         return $this->faceMatchRunner->run($idBytes, $selfie, $session->settings['face_match_threshold'] ?? null);
     }
@@ -335,6 +355,83 @@ class HostedController extends Controller
             (float) $validated['longitude'],
             isset($validated['accuracy']) ? (float) $validated['accuracy'] : null,
         );
+    }
+
+    /**
+     * Hosted location MATCH: the device GPS is captured here; the EXPECTED point
+     * is supplied by the integrator at session-create via metadata
+     * (expected_lat/expected_lng, optional radius_m or expected_address later).
+     */
+    private function runLocationMatch(VerificationSession $session, Request $request)
+    {
+        $meta = $session->metadata ?? [];
+        $expLat = $meta['expected_lat'] ?? $meta['expected_latitude'] ?? null;
+        $expLon = $meta['expected_lng'] ?? $meta['expected_longitude'] ?? null;
+        if ($expLat === null || $expLon === null) {
+            return GlobalHelper::apiError('missing_expected_location', 'This session has no expected location. Set metadata.expected_lat/expected_lng at session create.', 400);
+        }
+        $v = $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'accuracy' => 'nullable|numeric',
+        ]);
+        $result = $this->locationMatchRunner->run(
+            (float) $v['latitude'],
+            (float) $v['longitude'],
+            (float) $expLat,
+            (float) $expLon,
+            isset($meta['radius_m']) ? (float) $meta['radius_m'] : null,
+            isset($v['accuracy']) ? (float) $v['accuracy'] : null,
+        );
+        // HOSTED-only: the end-user's browser hit us directly, so we see their real
+        // IP (via the proxy's X-Forwarded-For). Coarse cross-check → soft `review`.
+        return $this->applyIpCrossCheck($result, $request, (float) $v['latitude'], (float) $v['longitude']);
+    }
+
+    /** Attach a coarse IP↔GPS consistency signal (soft: downgrades to review, never fails). */
+    private function applyIpCrossCheck($result, Request $request, float $gpsLat, float $gpsLon)
+    {
+        $xff = $request->header('X-Forwarded-For');
+        $userIp = $xff ? trim(explode(',', $xff)[0]) : $request->ip();
+        $ipLoc = $this->ipGeo->locate($userIp);
+
+        if (!$ipLoc) {
+            $result->data['ip_check'] = 'unavailable';
+            return $result;
+        }
+        $km = \App\Services\IpGeoService::haversineKm($gpsLat, $gpsLon, $ipLoc['lat'], $ipLoc['lon']);
+        $threshold = (float) config('verify.location_ip_mismatch_km', 200);
+        $result->data['ip_check'] = $km > $threshold ? 'mismatch' : 'consistent';
+        $result->data['ip_distance_km'] = round($km, 0);
+        $result->data['ip_city'] = $ipLoc['city'];
+
+        if ($km > $threshold && $result->status === \App\Models\VerificationCheck::STATUS_PASSED) {
+            // Right geofence but the IP is a region away → likely spoofed GPS. Flag for review.
+            $result->status = \App\Models\VerificationCheck::STATUS_REVIEW;
+            $result->data['review_reason'] = 'ip_gps_mismatch';
+        }
+        return $result;
+    }
+
+    /**
+     * Hosted EVV Presence: face match (id_front vs selfie captured in this flow)
+     * + location match (captured GPS vs the session's expected location).
+     */
+    private function runEvvPresence(VerificationSession $session, Request $request)
+    {
+        $face = $this->runFaceMatch($session);
+        if ($face instanceof \Illuminate\Http\JsonResponse) {
+            return $face;
+        }
+        $loc = $this->runLocationMatch($session, $request);
+        if ($loc instanceof \Illuminate\Http\JsonResponse) {
+            return $loc;
+        }
+        $ok = $face->status === VerificationCheck::STATUS_PASSED && $loc->status === VerificationCheck::STATUS_PASSED;
+        $data = ['face_match' => $face->toArray(), 'location_match' => $loc->toArray(), 'verified' => $ok];
+        return $ok
+            ? CheckResult::passed(VerificationCheck::TYPE_EVV_PRESENCE, $face->score, $data)
+            : CheckResult::failed(VerificationCheck::TYPE_EVV_PRESENCE, 'presence_not_verified', $face->score, $data);
     }
 
     private function runCredential(VerificationSession $session, Request $request)

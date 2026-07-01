@@ -58,10 +58,14 @@ const badgeClass = (s: string) =>
   : s === "running" ? "bg-sky-50 text-sky-700"
   : "bg-secondary text-muted-foreground";
 
-function docsForFeatures(features: string[]): DocType[] {
+function docsForFeatures(features: string[], account = false): DocType[] {
   const seen = new Set<DocType>();
   const out: DocType[] = [];
-  for (const f of features) for (const d of FEATURE_DOCS[f] ?? []) if (!seen.has(d)) { seen.add(d); out.push(d); }
+  for (const f of features) {
+    // ACCOUNT session: face match uses the stored Valyd vector → selfie only, no ID.
+    const docs = account && f === "face_match" ? (["selfie"] as DocType[]) : (FEATURE_DOCS[f] ?? []);
+    for (const d of docs) if (!seen.has(d)) { seen.add(d); out.push(d); }
+  }
   return out;
 }
 
@@ -143,9 +147,21 @@ export function HostedFlow({ token }: { token: string }) {
         fail(r.error?.message || "This verification link is invalid or has expired.");
         return;
       }
-      setFeatures(r.data.features);
+      // Skip steps already satisfied for this Valyd user (reused from the account) —
+      // don't re-collect an ID or re-run a check that's already `passed`.
+      const steps: Array<{ feature: string; status: string }> = (r.data as any).steps ?? [];
+      const passedSet = new Set(steps.filter((s) => s.status === "passed").map((s) => s.feature));
+      const pending = r.data.features.filter((f) => !passedSet.has(f));
+      const active = pending.length ? pending : r.data.features;
+      const isAccount = !!r.data.pollus_id;
+      setFeatures(active);
       setRedirectUrl(r.data.redirect_url);
-      setDocs(docsForFeatures(r.data.features));
+      setDocs(docsForFeatures(active, isAccount));
+      if (passedSet.size) {
+        const seed: Record<string, string> = {};
+        steps.forEach((s) => { if (s.status === "passed") seed[s.feature] = "passed"; });
+        setChecks(seed);
+      }
       if (TERMINAL.includes(r.data.status)) {
         const rr = await getResult(token);
         if (rr.success && rr.data) { finish(rr.data); return; }

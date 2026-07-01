@@ -114,6 +114,9 @@ Route::prefix('v2')->middleware('project.key')->group(function () {
     Route::post('age-verification', [StandaloneController::class, 'ageVerification']);
     Route::post('credential-verification', [StandaloneController::class, 'credentialVerification']);
     Route::post('location', [StandaloneController::class, 'location']);
+    Route::post('location-match', [StandaloneController::class, 'locationMatch']);
+    // EVV Presence bundle: face match + location match (right person + right place).
+    Route::post('evv-presence', [StandaloneController::class, 'evvPresence']);
 
     // KYC + License in one synchronous call (ID + liveness + face match, then the
     // license checked against the OCR'd name).
